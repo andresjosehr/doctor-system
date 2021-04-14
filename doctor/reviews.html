@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/tables/datatable/responsive.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -34,6 +35,7 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/menu/menu-types/horizontal-menu.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/plugins/forms/form-validation.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/pages/app-user.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -53,10 +55,7 @@
         <ul class="nav navbar-nav">
             <li class="nav-item">
                         <svg>
- 
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                
-                            </g>
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"></g>
                         </svg></span>
             </li>
         </ul>
@@ -227,14 +226,9 @@
                 <section class="app-user-list">
                     <!-- users filter start -->
                     <div class="card">
-                        <h2 class="card-header" style="margin-top: 15px">Reviews</h2>
-                        <div class="d-flex justify-content-between align-items-center mx-50 row pt-0 pb-2">
-                            <div class="col-md-4 user_role"></div>
-                            <div class="col-md-4 user_plan"></div>
-                            <div class="col-md-4 user_status"></div>
-                        </div>
-                        <div class="form-group " >
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#reviewsModal" style="margin-left: 15px;">
+                        <div class="card-header" style="margin-top: 15px">
+                            <h2>Reviews</h2>
+                            <button onClick='window.createTestimonial()' style="width: 100px;" onclick="window.createHoliday()" type="button" class="btn btn-success" data-toggle="modal" data-target="#holidaysModal" style="margin-left: 15px;">
                                 Create
                               </button>
                         </div>
@@ -247,37 +241,16 @@
                                 <thead class="thead-light">
                                     <tr>
                                         <th>Identifier</th>
+                                        <th>Fecha</th>
+                                        <th>Name</th>
+                                        <th>Testimonials</th>
                                         <th>Photo</th>
-                                        <th>Author</th>
-                                        <th>Testimonial</th>
-                                        <th>Date</th>
-                                        <th>Is Active</th>
                                         <th>Actions</th>
                                     </tr>
-                                    <tr>
-                                        <th>1</th>
-                                        <th>Photo</th>
-                                        <th>Britney Roberts</th>
-                                        <th>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed ipsam iste perspiciatis ducimus minima animi dolor illum quidem, nisi enim ipsa cum eligendi at eum modi tenetur nam quasi aut?</th>
-                                        <th>2021-February-23</th>
-                                        <th>True</th>
-                                        <th><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewsModal">
-                                            Edit
-                                          </button></th>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <th>2</th>
-                                        <th>Photo</th>
-                                        <th>Britney Roberts</th>
-                                        <th>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed ipsam iste perspiciatis ducimus minima animi dolor illum quidem, nisi enim ipsa cum eligendi at eum modi tenetur nam quasi aut?</th>
-                                        <th>2021-February-23</th>
-                                        <th>True</th>
-                                        <th><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewsModal">
-                                            Edit
-                                          </button></th>
-                                    </tr>
                                 </thead>
+                                <tbody id='testimonials-list'>
+
+                                </tbody>
                             </table>
                         </div>
                         <!-- Modal to add new user starts-->
@@ -340,35 +313,51 @@
                                     </div>
                                     <div class="modal-body" >
                                        <div style="display: flex; box-sizing: border-box;">
-                                            <div class="form-group position-relative" style="width: 25%; margin: 0px 10px 10px 10px">
+                                            <div class="form-group position-relative" style="width: 50%; margin: 0px 10px 10px 10px">
                                                 <label for="identifier" class="form-label">Identifier</label>
                                                 <input type="text" class="form-control" id="identifier" name="identifier" placeholder="0" disabled/>
                                             </div>
-                                            <div class="form-group position-relative" style="width: 65%; margin: 0px 10px 10px 10px">
-                                                <label for="author" class="form-label">Author</label>
-                                                <input type="text" class="form-control" id="author" name="author" placeholder=""/>
+                                            <div class="form-group position-relative" style="width: 50%; margin: 0px 10px 10px 10px">
+                                                <label for="name" class="form-label">Author</label>
+                                                <input type="text" class="form-control" id="name" name="name" placeholder=""/>
+                                                <span style="display: none;" id="name-error" class="error">Required</span>
                                             </div>
                                       </div>
                                       <div style="display: flex; box-sizing: border-box;">
-                                        <div class="form-group" style="width: 20%; margin: 0px 10px 10px 10px">
-                                            <label for="active-label" class="form-label">Active</label>
-                                            <select class="select2 active-label form-control w-100" id="active-label" name="active-label">
-                                                <option data-label="primary" value="true" selected>True</option>
-                                                <option data-label="danger" value="false">False</option>
-                                            </select>
+                                                <div class="form-group" style="width: 50%; margin: 0px 10px 10px 10px">
+                                                    <label for="fecha-label" class="form-label">Date</label>
+                                                    <input type="text" class="form-control" id="fecha" name="fecha" placeholder=""/>
+                                                    <span style="display: none;" id="fecha-error" class="error">Required</span>
+                                                </div>
+                                                <div class="form-group" style="width: 50%; margin: 0px 10px 10px 10px">
+                                                    <label for="active-label" class="form-label">Active</label>
+                                                    <select class="select2 active-label form-control w-100" id="active-label" name="active-label">
+                                                        <option data-label="primary" value="true" selected>True</option>
+                                                        <option data-label="danger" value="false">False</option>
+                                                    </select>
+                                                </div>
                                         </div>
-                                        <div class="form-group position-relative" style="width: 65%; margin: 0px 10px 10px 10px">
-                                            <label for="testimonial" class="form-label">Testimonial</label>
-                                            <input type="text" class="form-control" id="testimonial" name="testimonial" placeholder=""/>
+
+                                        <div style="display: flex; box-sizing: border-box;">
+                                                <div class="form-group" style="width: 100%; margin: 0px 10px 10px 10px">
+                                                    <label for="text_testimonials">Testimony</label>
+                                                    <textarea class="form-control" id="text_testimonials" rows="3" placeholder=""></textarea>
+                                                    <span style="display: none;" id="text_testimonials-error" class="error">Required</span>
+                                                </div>
                                         </div>
-                                  </div>
                                     <div class="media-body mt-75 ml-1">
-                                        <label for="account-upload" class="btn btn-sm btn-primary mb-75 mr-75">Upload Image</label>
-                                        <input type="file" id="account-upload" hidden accept="image/*" />
+                                        <label for="photo" class="btn btn-sm btn-primary mb-75 mr-75">Upload Image</label>
+                                        <input type="file" id="photo" hidden accept="image/*" />
                                         <p>Allowed JPG, GIF or PNG. Max size of 800kB</p>
                                     </div>
                                     <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Save</button>
+                                    <span id="form-error" class="error"></span>
+                                    <button id='testimonial-btn' onClick='window.manageTestimonial()' type="button" class="btn btn-primary">Save</button>
+                                    <div id='testimonial-spinner' style="text-align: center; display: none">
+                                        <div class="spinner-border" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                                 </div>
@@ -399,6 +388,7 @@
     <script src="../app-assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script>
     <script src="../app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js"></script>
     <script src="../app-assets/vendors/js/forms/validation/jquery.validate.min.js"></script>
+    <script src="../app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
     <!-- END: Page Vendor JS-->
 
     <!-- BEGIN: Theme JS-->
@@ -411,6 +401,7 @@
     <!-- END: Page JS-->
 
     <script type="module" src="./../app-assets/js/core/general.js"></script>
+    <script type="module" src="./../app-assets/js/core/doctor/testimonials.js"></script>
 
     <script>
         $(window).on('load', function() {
@@ -420,6 +411,7 @@
                     height: 14
                 });
             }
+            flatpickr("#fecha", {dateFormat: "Y-m-d"});
         })
     </script>
 </body>

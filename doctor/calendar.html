@@ -262,16 +262,12 @@
                                 <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
                                     <form class="event-form needs-validation" data-ajax="false" novalidate>
                                         <div class="form-group position-relative">
-                                            <label for="start-date" class="form-label">Appointment Date</label>
-                                            <input type="text" class="form-control" id="start-date" name="start-date" placeholder="yyyy-mm-dd" />
-                                        </div>
-                                        <div class="form-group position-relative">
-                                            <label for="start-date" class="form-label">Appointment Hour</label>
-                                            <input type="text" class="form-control" id="start-hour" name="start-hour" placeholder="hh:mm" />
+                                            <label for="datetime" class="form-label">Appointment Date Time</label>
+                                            <input type="text" class="form-control" id="datetime" name="datetime" placeholder="yyyy-mm-dd" />
                                         </div>
                                         <div class="form-group">
-                                            <label for="title" class="form-label">Patient</label>
-                                            <input type="text" class="form-control" id="title" name="title" placeholder="Patient name" required />
+                                            <label for="forappointment" class="form-label">For appointment</label>
+                                            <input type="text" class="form-control" id="forappointment" name="forappointment" placeholder="Patient name" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="select-label" class="form-label">Service</label>
@@ -288,7 +284,7 @@
                                                 <option data-label="info" value="Regular Appointment">Regular Appointment</option>
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input allDay-switch" id="customSwitch3" />
                                                 <label class="custom-control-label" for="customSwitch3">New Patient</label>
@@ -303,7 +299,7 @@
                                             <select class="select2 select-label form-control w-100" id="select-label-user" name="select-label-user">
                                                 <option data-label="primary" value="Choose" selected>Choose user</option>
                                             </select>
-                                        </div>
+                                        </div> -->
                                         <div class="form-group d-flex">
                                             <button type="submit" class="btn btn-primary add-event-btn mr-1">Save</button>
                                             <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">Cancel</button>
@@ -362,6 +358,11 @@
                     height: 14
                 });
             }
+
+            flatpickr("#datetime", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i"
+            });
         })
     </script>
 </body>
