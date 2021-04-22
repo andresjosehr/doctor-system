@@ -40,24 +40,24 @@ document.addEventListener('DOMContentLoaded', function () {
       Family: 'warning',
       ETC: 'info'
     },
-    eventForm = $('.event-form'),
-    addEventBtn = $('.add-event-btn'),
-    cancelBtn = $('.btn-cancel'),
-    updateEventBtn = $('.update-event-btn'),
+    eventForm        = $('.event-form'),
+    addEventBtn      = $('.add-event-btn'),
+    cancelBtn        = $('.btn-cancel'),
+    updateEventBtn   = $('.update-event-btn'),
     toggleSidebarBtn = $('.btn-toggle-sidebar'),
-    eventTitle = $('#title'),
-    eventLabel = $('#select-label'),
-    startDate = $('#start-date'),
-    endDate = $('#end-date'),
-    eventUrl = $('#event-url'),
-    eventGuests = $('#event-guests'),
-    eventLocation = $('#event-location'),
-    allDaySwitch = $('.allDay-switch'),
-    selectAll = $('.select-all'),
-    calEventFilter = $('.calendar-events-filter'),
-    filterInput = $('.input-filter'),
-    btnDeleteEvent = $('.btn-delete-event'),
-    calendarEditor = $('#event-description-editor');
+    eventTitle       = $('#title'),
+    eventLabel       = $('#select-label'),
+    startDate        = $('#start-date'),
+    endDate          = $('#end-date'),
+    eventUrl         = $('#event-url'),
+    eventGuests      = $('#event-guests'),
+    eventLocation    = $('#event-location'),
+    allDaySwitch     = $('.allDay-switch'),
+    selectAll        = $('.select-all'),
+    calEventFilter   = $('.calendar-events-filter'),
+    filterInput      = $('.input-filter'),
+    btnDeleteEvent   = $('.btn-delete-event'),
+    calendarEditor   = $('#event-description-editor');
 
   // --------------------------------------------
   // On add new item, clear sidebar-right field fields
@@ -157,7 +157,18 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Event click function
+  // To edit created events
   function eventClick(info) {
+    
+    const data = info.event._def.extendedProps
+
+        $("#identifier").val(data.identifier);
+        $("#appointment-date").val(data.appointmentDate);
+        $("#appointment-time").val(data.appointmentTime);
+        $("#forappointment").val(data.forAppointment);
+        $("#service").val(data.service);
+
+
     eventToUpdate = info.event;
     if (eventToUpdate.url) {
       info.jsEvent.preventDefault();
@@ -166,24 +177,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     sidebar.modal('show');
     addEventBtn.addClass('d-none');
-    cancelBtn.addClass('d-none');
+    /* cancelBtn.addClass('d-none'); */
     updateEventBtn.removeClass('d-none');
     btnDeleteEvent.removeClass('d-none');
-
-    eventTitle.val(eventToUpdate.title);
-    start.setDate(eventToUpdate.start, true, 'Y-m-d');
-    eventToUpdate.allDay === true ? allDaySwitch.prop('checked', true) : allDaySwitch.prop('checked', false);
-    eventToUpdate.end !== null
-      ? end.setDate(eventToUpdate.end, true, 'Y-m-d')
-      : end.setDate(eventToUpdate.start, true, 'Y-m-d');
-    sidebar.find(eventLabel).val(eventToUpdate.extendedProps.calendar).trigger('change');
-    eventToUpdate.extendedProps.location !== undefined ? eventLocation.val(eventToUpdate.extendedProps.location) : null;
-    eventToUpdate.extendedProps.guests !== undefined
-      ? eventGuests.val(eventToUpdate.extendedProps.guests).trigger('change')
-      : null;
-    eventToUpdate.extendedProps.guests !== undefined
-      ? calendarEditor.val(eventToUpdate.extendedProps.description)
-      : null;
 
     //  Delete Event
     btnDeleteEvent.on('click', function () {
@@ -253,6 +249,14 @@ document.addEventListener('DOMContentLoaded', function () {
     dragScroll: true,
     dayMaxEvents: 2,
     eventResizableFromStart: true,
+    selectable: true,
+    select: function(start, end, jsEvent, view) {
+
+      $("#forappointment").val("")
+      $("#appointment-time").val("")
+      $("#appointment-date").val(start.startStr)
+
+    },
     customButtons: {
       sidebarToggle: {
         text: 'Sidebar'
@@ -338,16 +342,31 @@ document.addEventListener('DOMContentLoaded', function () {
   // addEvent
   // ------------------------------------------------
   function addEvent(eventData) {
-    calendar.addEvent(eventData);
+    
+    calendar.addEvent({
+      title: `${$("#appointment-time").val()} ${$("#forappointment").val()}`,
+      start: $("#appointment-date").val(),
+      extendedProps: {
+        identifier: "4ads6f8415-dtgh15e521rtb8-sdfe8tb",
+        appointmentDate: $("#appointment-date").val(),
+        appointmentTime: $("#appointment-time").val(),
+        forAppointment: $("#forappointment").val(),
+        service: $("#service").val()
+      }
+    });
+    
+
     calendar.refetchEvents();
+    window.saveAppointment();
+
   }
 
   // ------------------------------------------------
   // updateEvent
   // ------------------------------------------------
   function updateEvent(eventData) {
-    var propsToUpdate = ['id', 'title', 'url'];
-    var extendedPropsToUpdate = ['calendar', 'guests', 'location', 'description'];
+    var propsToUpdate = ['id', 'title'];
+    var extendedPropsToUpdate = [ "appointmentDate", "appointmentTime", "forAppointment", "service"];
 
     updateEventInCalendar(eventData, propsToUpdate, extendedPropsToUpdate);
   }
@@ -399,51 +418,33 @@ document.addEventListener('DOMContentLoaded', function () {
     if (eventForm.valid()) {
       var newEvent = {
         id: calendar.getEvents().length + 1,
-        title: eventTitle.val(),
-        start: startDate.val(),
-        end: endDate.val(),
-        startStr: startDate.val(),
-        endStr: endDate.val(),
-        display: 'block',
-        extendedProps: {
-          location: eventLocation.val(),
-          guests: eventGuests.val(),
-          calendar: eventLabel.val(),
-          description: calendarEditor.val()
-        }
+        time: eventTitle.val(),
+        service: startDate.val()
       };
-      if (eventUrl.val().length) {
-        newEvent.url = eventUrl.val();
-      }
-      if (allDaySwitch.prop('checked')) {
-        newEvent.allDay = true;
-      }
-      addEvent(newEvent);
     }
+
+    addEvent(newEvent);
+
   });
 
   // Update new event
   updateEventBtn.on('click', function () {
-    if (eventForm.valid()) {
+      
       var eventData = {
         id: eventToUpdate.id,
-        title: sidebar.find(eventTitle).val(),
-        start: sidebar.find(startDate).val(),
-        end: sidebar.find(endDate).val(),
-        url: eventUrl.val(),
+        title: `${$("#appointment-time").val()} ${$("#forappointment").val()}`,
+        start: $("#appointment-date").val(),
         extendedProps: {
-          location: eventLocation.val(),
-          guests: eventGuests.val(),
-          calendar: eventLabel.val(),
-          description: calendarEditor.val()
-        },
-        display: 'block',
-        allDay: allDaySwitch.prop('checked') ? true : false
+          identifier: "4ads6f8415-dtgh15e521rtb8-sdfe8tb",
+          appointmentDate: $("#appointment-date").val(),
+          appointmentTime: $("#appointment-time").val(),
+          forAppointment: $("#forappointment").val(),
+          service: $("#service").val()
+        }
       };
 
       updateEvent(eventData);
       sidebar.modal('hide');
-    }
   });
 
   // Reset sidebar input values

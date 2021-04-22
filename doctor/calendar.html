@@ -41,11 +41,16 @@
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
     <!-- END: Custom CSS-->
 
+    <style>
+        .fc-h-event .fc-event-title-container{
+            color: white;
+        }
+    </style>
+
 </head>
 <!-- END: Head-->
 
 <!-- BEGIN: Body-->
-
 <body class="horizontal-layout horizontal-menu  navbar-floating footer-static  " data-open="hover" data-menu="horizontal-menu" data-col="">
 
    
@@ -261,28 +266,26 @@
                                 </div>
                                 <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
                                     <form class="event-form needs-validation" data-ajax="false" novalidate>
+                                        <input type="hidden" id='identifier' name='identifier'>
                                         <div class="form-group position-relative">
-                                            <label for="datetime" class="form-label">Appointment Date Time</label>
-                                            <input type="text" class="form-control" id="datetime" name="datetime" placeholder="yyyy-mm-dd" />
+                                            <label for="datetime" class="form-label">Appointment date</label>
+                                            <input type="text" class="form-control" id="appointment-date" name="appointment-date" disabled />
+                                        </div>
+                                        <div class="form-group position-relative">
+                                            <label for="datetime" class="form-label">Appointment Time</label>
+                                            <input type="text" class="form-control" id="appointment-time" name="appointment-time" placeholder="00:00" />
+                                            <span style="display: none;" id="appointment-time" class="error">Required</span>
                                         </div>
                                         <div class="form-group">
                                             <label for="forappointment" class="form-label">For appointment</label>
                                             <input type="text" class="form-control" id="forappointment" name="forappointment" placeholder="Patient name" required />
+                                            <span style="display: none;" id="forappointment" class="error">Required</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="select-label" class="form-label">Service</label>
-                                            <select class="select2 select-label form-control w-100" id="select-label" name="select-label">
-                                                <option data-label="primary" value="Choose" selected>Choose</option>
-                                                <option data-label="danger" value="Consultation">Consultation</option>
-                                                <option data-label="warning" value="Crown / Bridge Delivery">Crown / Bridge Delivery</option>
-                                                <option data-label="success" value="Crown / Bridge Prep">Crown / Bridge Prep</option>
-                                                <option data-label="info" value="Emergency">Emergency</option>
-                                                <option data-label="primary" value="Endo">Endo</option>
-                                                <option data-label="danger" value="Oral Surgery">Oral Surgery</option>
-                                                <option data-label="warning" value="Partial / Denture">Partial / Denture</option>
-                                                <option data-label="success" value="Prophy Appointment">Prophy Appointment</option>
-                                                <option data-label="info" value="Regular Appointment">Regular Appointment</option>
+                                            <label for="service" class="form-label">Service</label>
+                                            <select class="select2 select-label form-control w-100" id="service" name="service">
                                             </select>
+                                            <span style="display: none;" id="service" class="error">Required</span>
                                         </div>
                                         <!-- <div class="form-group">
                                             <div class="custom-control custom-switch">
@@ -302,8 +305,8 @@
                                         </div> -->
                                         <div class="form-group d-flex">
                                             <button type="submit" class="btn btn-primary add-event-btn mr-1">Save</button>
+                                            <button type="submit" class="btn btn-primary update-event-btn mr-1">Save</button>
                                             <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">Cancel</button>
-                                            
                                         </div>
                                     </form>
                                 </div>
@@ -349,6 +352,7 @@
 
 
     <script type="module" src="./../app-assets/js/core/general.js"></script>
+    <script type="module" src="./../app-assets/js/core/doctor/calendar.js"></script>
 
     <script>
         $(window).on('load', function() {
@@ -359,9 +363,10 @@
                 });
             }
 
-            flatpickr("#datetime", {
+            flatpickr("#appointment-time", {
+                noCalendar: true,
                 enableTime: true,
-                dateFormat: "Y-m-d H:i"
+                dateFormat: "H:i"
             });
         })
     </script>

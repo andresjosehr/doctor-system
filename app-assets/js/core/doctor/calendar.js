@@ -22,16 +22,22 @@ function getServices(){
     });
 
     request.done(function (response, textStatus, jqXHR){
-        let appointmentListHTML = ''
-        response.map(appointment => {
-           console.log(appointment)
+        let serviceHTML = ''
+        response.services.map(serviceItem => {
+            serviceHTML+=`<option data-label="primary" value="${serviceItem.identifier}">${serviceItem.text_service_item}</option>`
+           console.log(serviceItem)
         });
 
-        /* $("#appointments-list").html(appointmentListHTML) */
+        $("#service").html(serviceHTML)
         
     });
     
     request.fail(function (jqXHR, textStatus, errorThrown){
         alert("Se ha producido un error en la consulta de usuarios")
     });
+}
+
+
+window.saveAppointment= function(){
+    /* alert("Guardado") */
 }
