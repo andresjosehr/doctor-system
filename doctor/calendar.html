@@ -35,6 +35,8 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/css/plugins/forms/pickers/form-flat-pickr.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/pages/app-calendar.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/plugins/forms/form-validation.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -45,7 +47,12 @@
         .fc-h-event .fc-event-title-container {
             color: white;
         }
+        .error {
+                color: #ea5455; 
+                font-size: 0.857rem;
+            }
     </style>
+    
 
 </head>
 <!-- END: Head-->
@@ -292,23 +299,20 @@
                                         <input type="hidden" id='identifier' name='identifier'>
                                         <div class="form-group position-relative">
                                             <label for="datetime" class="form-label">Appointment date</label>
-                                            <input type="text" class="form-control" id="appointment-date" name="appointment-date" disabled />
+                                            <input type="text" class="form-control" id="appointment-date" name="appointment-date" required disabled />
                                         </div>
                                         <div class="form-group position-relative">
                                             <label for="datetime" class="form-label">Appointment Time</label>
-                                            <input type="text" class="form-control" id="appointment-time" name="appointment-time" placeholder="00:00" />
-                                            <span style="display: none;" id="appointment-time" class="error">Required</span>
+                                            <input type="text" class="form-control" id="appointment-time" name="appointment-time" placeholder="00:00" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="forappointment" class="form-label">For appointment</label>
-                                            <input type="text" class="form-control" id="forappointment" name="forappointment" placeholder="Patient name" required />
-                                            <span style="display: none;" id="forappointment" class="error">Required</span>
+                                            <input type="text" class="form-control" id="for_appointment" name="for_appointment" placeholder="Patient name" required />
                                         </div>
                                         <div class="form-group">
                                             <label for="service" class="form-label">Service</label>
-                                            <select class="select2 select-label form-control w-100" id="service" name="service">
+                                            <select class="select2 select-label form-control w-100" id="service" name="service" required>
                                             </select>
-                                            <span style="display: none;" id="service" class="error">Required</span>
                                         </div>
                                         <!-- <div class="form-group">
                                             <div class="custom-control custom-switch">
@@ -326,6 +330,9 @@
                                                 <option data-label="primary" value="Choose" selected>Choose user</option>
                                             </select>
                                         </div> -->
+                                        <div>
+                                            <span style="display: none;" id="form-error" class="error">All fields are mandatory</span>
+                                        </div>
                                         <div class="form-group d-flex">
                                             <button type="submit" class="btn btn-primary add-event-btn mr-1">Save</button>
                                             <button type="submit" class="btn btn-primary update-event-btn mr-1">Save</button>
