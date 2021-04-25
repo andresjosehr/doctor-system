@@ -1,10 +1,14 @@
 import environment from '../../../environment.js'
 import { getCookie, checkLogin } from './general.js'
 
-/* console.log(getCookie("Authorization")); */
+window.app = ''
 
 $(document).ready(()=>{
     login();
+
+    const parts = window.location.href.split('/');
+    window.app = parts.pop() || parts.pop();  // handle potential trailing slash
+
 });
 
 function checkLonginL(){
@@ -13,7 +17,8 @@ function checkLonginL(){
 
     request.done(function (response, textStatus, jqXHR){
 
-        if($(location).attr('href')==environment.appUrl){
+        console.log($(location).attr('href'), environment.appUrl)
+
             if(response.type_users=="admins"){
                 window.location.href = "./admin/calendar.html";
             }
@@ -23,7 +28,6 @@ function checkLonginL(){
             }
             $("#login-btn").show()
             $("#login-spinner").hide()
-        }
     });
 
     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -49,7 +53,7 @@ function login(){
 
             const email = $("#login-email").val();
             const password = $("#login-password").val();
-            const application = $("#login-application").val();
+            const application = window.app;
 
             const request = $.ajax({
                 url: `${environment.apiURL}/auth/login`,

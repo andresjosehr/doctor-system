@@ -53,11 +53,13 @@ window.logoutL=()=>{
 
     request.done(function (response, textStatus, jqXHR){
 
+        const app = getCookie("application");
         delete_cookie("identifier");
         delete_cookie("Authorization");
         delete_cookie("application");
         
-        window.location.href = environment.appUrl;
+        window.location.href = `${environment.appUrl}/${app}`;
+
     });
 
     request.fail(function (jqXHR, textStatus, errorThrown){
