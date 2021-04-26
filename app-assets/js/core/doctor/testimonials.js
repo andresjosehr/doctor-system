@@ -26,7 +26,7 @@ function getTestimonials(){
         response.map(testimonial => {
             testimonialsListHTML+=
                                 `<tr id='${testimonial.identifier}'>
-                                    <th id='${testimonial.identifier}-identifier'>${testimonial.identifier}</th>
+                                    <th id='${testimonial.identifier}-identifier'>${testimonial.identifier.slice(testimonial.identifier.length - 3)}</th>
                                     <th id='${testimonial.identifier}-fecha'>${formatDate(testimonial.fecha)}</th>
                                     <th id='${testimonial.identifier}-name'>${testimonial.name}</th>
                                     <th id='${testimonial.identifier}-text_testimonials'>${testimonial.text_testimonials}</th>
@@ -119,10 +119,12 @@ window.manageTestimonial=()=>{
     const testimonialData = {
         name:  $('#name').val(),
         fecha:  $("#fecha").val(),
-        active: $("#active").val(),
+        active: $("#active-label").val()=="true",
         text_testimonials: $("#text_testimonials").val(),
         app: getCookie("application"),
     }
+
+    console.log(testimonialData)
 
 
 
@@ -142,12 +144,27 @@ window.manageTestimonial=()=>{
 
      request.done((response)=>{
 
-
-        if(testimonialMethod=="create"){
-            uploadTestimonialPhoto(response, testimonialMethod);
-        } else {
-            uploadTestimonialPhoto(testimonialData, testimonialMethod);
+        if($('#photo')[0].files[0]){
+            if(testimonialMethod=="create"){
+                uploadTestimonialPhoto(response, testimonialMethod);
+            } else {
+                uploadTestimonialPhoto(testimonialData, testimonialMethod);
+            }
+        } else{
+            if(testimonialMethod=="create"){
+                addTestimonialToList(response);
+            } else {
+                updateTestimonialInList({identifier: $('#identifier').val(), ...testimonialData});
+            }
         }
+
+        let actionWord=testimonialMethod=="create" ? "created" : "updated";
+        $("#reviewsModal").modal("hide")
+        $("#testimonial-btn").show()
+        $("#testimonial-spinner").hide()
+        swal("Done", `The testimonial was ${actionWord} succefully`, "success");
+
+        
     }); 
 
     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -195,7 +212,7 @@ function uploadTestimonialPhoto(testimonial, testimonialMethod){
            if(testimonialMethod=="create"){
                addTestimonialToList(testimonial);
            } else {
-               updateTestimonialInLit({identifier: $('#identifier').val(), ...testimonialData});
+            updateTestimonialInList({identifier: $('#identifier').val(), ...testimonialData});
            }
        }); 
    
@@ -229,7 +246,7 @@ function uploadTestimonialPhoto(testimonial, testimonialMethod){
 function addTestimonialToList(testimonial){
     $("#testimonials-list").append(
         `<tr id='${testimonial.identifier}'>
-                                    <th id='${testimonial.identifier}-identifier'>${testimonial.identifier}</th>
+                                    <th id='${testimonial.identifier}-identifier'>${testimonial.identifier.slice(testimonial.identifier.length - 3)}</th>
                                     <th id='${testimonial.identifier}-fecha'>${formatDate(testimonial.fecha)}</th>
                                     <th id='${testimonial.identifier}-name'>${testimonial.name}</th>
                                     <th id='${testimonial.identifier}-text_testimonials'>${testimonial.text_testimonials}</th>
@@ -251,10 +268,16 @@ function addTestimonialToList(testimonial){
 
 function updateTestimonialInList(testimonial){
 
-        console.log(testimonial)
-    testimonialFields.map( field => $(`#${testimonial.identifier}-${field}`).text(`${testimonial[field]}`) );
+    testimonialFields.map( field => {
+        if(field=="identifier"){
+            $(`#${testimonial.identifier}-${field}`).text(`${testimonial[field].slice(testimonial[field].length - 3)}`) 
+        }else {
+            $(`#${testimonial.identifier}-${field}`).text(`${testimonial[field]}`) 
+        }
+    });
+
     $(`#${testimonial.identifier}-btn #edit`).attr("onclick", `window.editTestimonial(`+JSON.stringify(testimonial)+`)`)
-        $(`#${testimonial.identifier}-btn #create`).attr("onclick", `window.deleteTestimonial(`+JSON.stringify(testimonial)+`)`)
+    $(`#${testimonial.identifier}-btn #create`).attr("onclick", `window.deleteTestimonial(`+JSON.stringify(testimonial)+`)`)
 
 }
 

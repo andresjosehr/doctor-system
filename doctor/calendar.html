@@ -237,6 +237,8 @@
                     </li>
                     <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="appointment.html">Appointment</span></a>
                     </li>
+                    <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="businessdays.html">Business Days</span></a>
+                    </li>
                     <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="services.html">Services</span></a>
                     </li>
                     <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="blogs.html">Blogs</span></a>
@@ -292,7 +294,7 @@
                             <div class="modal-content p-0">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
                                 <div class="modal-header mb-1">
-                                    <h5 class="modal-title">Add Event</h5>
+                                    <h5 class="modal-title">Event</h5>
                                 </div>
                                 <div class="modal-body flex-grow-1 pb-sm-0 pb-3">
                                     <form class="event-form needs-validation" data-ajax="false" novalidate>
@@ -303,15 +305,15 @@
                                         </div>
                                         <div class="form-group position-relative">
                                             <label for="datetime" class="form-label">Appointment Time</label>
-                                            <input type="text" class="form-control" id="appointment-time" name="appointment-time" placeholder="00:00" required />
+                                            <input type="text" class="form-control" id="appointment-time" name="appointment-time" placeholder="00:00" required disabled />
                                         </div>
                                         <div class="form-group">
                                             <label for="forappointment" class="form-label">For appointment</label>
-                                            <input type="text" class="form-control" id="for_appointment" name="for_appointment" placeholder="Patient name" required />
+                                            <input type="text" class="form-control" id="for_appointment" name="for_appointment" placeholder="Patient name" required disabled />
                                         </div>
                                         <div class="form-group">
                                             <label for="service" class="form-label">Service</label>
-                                            <select class="select2 select-label form-control w-100" id="service" name="service" required>
+                                            <select class="select2 select-label form-control w-100" id="service" name="service" required disabled>
                                             </select>
                                         </div>
                                         <!-- <div class="form-group">
@@ -334,11 +336,10 @@
                                             <span style="display: none;" id="form-error" class="error">All fields are mandatory</span>
                                         </div>
                                         <div class="form-group d-flex">
-                                            <button type="submit" class="btn btn-primary add-event-btn mr-1">Save</button>
+                                            <!-- <button type="submit" class="btn btn-primary add-event-btn mr-1">Save</button>
                                             <button type="submit" class="btn btn-primary update-event-btn mr-1">Save</button>
-                                            <button type="submit" class="btn btn-primary btn-delete-event mr-1">Delete</button>
-                                            <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">Cancel</button>
-                                        </div>
+                                            <button type="submit" class="btn btn-primary btn-delete-event mr-1">Delete</button> -->
+                                            <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">Close</button>                                        </div>
                                     </form>
                                 </div>
                             </div>

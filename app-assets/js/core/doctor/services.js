@@ -28,7 +28,7 @@ function getServices(){
         response.services.map(service => {
             if(getCookie("identifier")!=service.identifier){
                 serviceListHTML+=`<tr id='${service.identifier}'>
-                                    <th id='${service.identifier}-identifier'>${service.identifier}</th>
+                                    <th id='${service.identifier}-identifier'>${service.identifier.slice(service.identifier.length - 3)}</th>
                                     <th id='${service.identifier}-text_service_item'>${service.text_service_item}</th>
                                     <th id='${service.identifier}-btn'>
                                         <button onClick='window.editService(`+JSON.stringify(service)+`)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#servicesModal">
@@ -125,6 +125,7 @@ window.manageService=()=>{
         $("#service-btn").show()
         $("#service-spinner").hide()
         swal("Done", `The service was ${actionWord} succefully`, "success");
+        $("#servicesModal").modal("hide")
         
         if(clientMethod=="create"){
             addServiceToList(actionWord=clientMethod=="create" ? response : serviceData)
@@ -150,12 +151,12 @@ window.manageService=()=>{
 
 
 function addServiceToList(service){
+    service=service[service.length-1]
+    console.log(service)
     $("#services-list").append(
         `<tr id='${service.identifier}'>
-                            <th id='${service.identifier}-identifier'>${service.identifier}</th>
-                            <th id='${service.identifier}-name'>${service.name}</th>
-                            <th id='${service.identifier}-start'>${formatDate(service.start)}</th>
-                            <th id='${service.identifier}-end'>${formatDate(service.end)}</th>
+                            <th id='${service.identifier}-identifier'>${service.identifier.slice(service.identifier.length - 3)}</th>
+                            <th id='${service.identifier}-text_service_item'>${service.text_service_item}</th>
                             <th id='${service.identifier}-btn'>
                                 <button onClick='window.editService(`+JSON.stringify(service)+`)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#servicesModal">
                                     Edit
@@ -170,7 +171,17 @@ function addServiceToList(service){
 
 function updateServiceInList(service){
 
-    serviceFields.map( field => $(`#${service.identifier}-${field}`).text(`${service[field]}`) );
+    serviceFields.map( field => {
+
+        if(field == "identifier") {
+            $(`#${service.identifier}-${field}`).text(`${service[field].slice(service[field].length - 3)}`) 
+        }else {
+            $(`#${service.identifier}-${field}`).text(`${service[field]}`) 
+        }
+    
+    });
+
+
     $(`#${service.identifier}-btn button`).attr("onclick", `window.editService(`+JSON.stringify(service)+`)`)
 
 }

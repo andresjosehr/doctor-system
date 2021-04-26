@@ -3,7 +3,7 @@ import { checkLogin, logout, checkLonginAdministrator, getCookie } from './../ge
 
 
 $(document).ready(()=>{
-    getServices();
+    /* getServices(); */
 });
 
 
@@ -31,7 +31,7 @@ function getServices(){
         
     });
     
-    request.fail(function (jqXHR, textStatus, errorThrown){
+    /* request.fail(function (jqXHR, textStatus, errorThrown){
         alert("Se ha producido un error en la consulta de usuarios")
-    });
+    }); */
 }

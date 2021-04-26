@@ -26,7 +26,7 @@ function getHolidays(){
         response.map(holiday => {
             if(getCookie("identifier")!=holiday.identifier){
                 holidayListHTML+=`<tr id='${holiday.identifier}'>
-                                    <th id='${holiday.identifier}-identifier'>${holiday.identifier}</th>
+                                    <th id='${holiday.identifier}-identifier'>${holiday.identifier.slice(holiday.identifier.length - 3)}</th>
                                     <th id='${holiday.identifier}-name'>${holiday.name}</th>
                                     <th id='${holiday.identifier}-start'>${formatDate(holiday.start)}</th>
                                     <th id='${holiday.identifier}-end'>${formatDate(holiday.end)}</th>
@@ -155,6 +155,8 @@ window.manageHoliday=()=>{
                 ...holidayData
             })
         }
+
+        $("#holidaysModal").modal('hide');
     }); 
 
     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -173,7 +175,7 @@ window.manageHoliday=()=>{
 function addHolidayToList(holiday){
     $("#holidays-list").append(
         `<tr id='${holiday.identifier}'>
-                            <th id='${holiday.identifier}-identifier'>${holiday.identifier}</th>
+                            <th id='${holiday.identifier}-identifier'>${holiday.identifier.slice(holiday.identifier.length - 3)}</th>
                             <th id='${holiday.identifier}-name'>${holiday.name}</th>
                             <th id='${holiday.identifier}-start'>${formatDate(holiday.start)}</th>
                             <th id='${holiday.identifier}-end'>${formatDate(holiday.end)}</th>
@@ -191,7 +193,14 @@ function addHolidayToList(holiday){
 
 function updateHolidayInList(holiday){
 
-    holidayFields.map( field => $(`#${holiday.identifier}-${field}`).text(`${holiday[field]}`) );
+    holidayFields.map( field => {
+        if(field=="identifier"){
+            $(`#${holiday.identifier}-${field}`).text(`${holiday[field].slice(holiday[field].length - 3)}`)
+        }else {
+            $(`#${holiday.identifier}-${field}`).text(`${holiday[field]}`);
+        }
+    });
+
     $(`#${holiday.identifier}-btn button`).attr("onclick", `window.editHoliday(`+JSON.stringify(holiday)+`)`)
 
 }

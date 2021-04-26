@@ -25,7 +25,7 @@ function getBlogs(){
         let blogsListHTML = ''
         response.map(blog => {
                 blogsListHTML+=`<tr id='${blog.identifier}'>
-                                    <th id='${blog.identifier}-identifier'>${blog.identifier}</th>
+                                    <th id='${blog.identifier}-identifier'>${blog.identifier.slice(blog.identifier.length - 3)}</th>
                                     <th id='${blog.identifier}-title_blog'>${blog.title_blog}</th>
                                     <th id='${blog.identifier}-sub_title'>${blog.sub_title}</th>
                                     <th id='${blog.identifier}-fecha'>${blog.fecha}</th>
@@ -60,7 +60,8 @@ function getBlogs(){
 
 window.editBlog=(blog)=>{
 
-   $("#img-blog-edit img").show();
+    $("#img-blog-edit img").attr("src", `${environment.apiURL}/images/blogs/${blog.identifier}/photo`);
+    $("#img-blog-edit img").show();
 
    $("#form-error").text("")
    blogFields.map(field => $(`#${field}-error`).hide() )
@@ -139,6 +140,9 @@ window.manageBlog=()=>{
         } else {
             uploadBlogPhoto(blogData, blogMethod);
         }
+
+        $("#blogModal").modal('hide');
+
     }); 
 
     request.fail(function (jqXHR, textStatus, errorThrown){
@@ -161,7 +165,7 @@ function uploadBlogPhoto(blog, blogMethod){
         data.append("blog", $('#photo')[0].files[0])
 
         const request = $.ajax({
-            url: `${environment.apiURL}/v1/blogs/${$("#identifier").val()}/upload`,
+            url: `${environment.apiURL}/v1/blogs/${blog.identifier}/upload`,
             type: "post",
             cache: false,
             contentType: false,
@@ -186,7 +190,7 @@ function uploadBlogPhoto(blog, blogMethod){
            if(blogMethod=="create"){
                addBlogToList(blog);
            } else {
-               updateBlogInLit({identifier: $('#identifier').val(), ...blogData});
+               updateBlogInLit({identifier: $('#identifier').val().slice($('#identifier').val().length - 3), ...blogData});
            }
        }); 
    
@@ -220,7 +224,7 @@ function uploadBlogPhoto(blog, blogMethod){
 function addBlogToList(blog){
     $("#blogs-list").append(
         `<tr id='${blog.identifier}'>
-            <th id='${blog.identifier}-identifier'>${blog.identifier}</th>
+            <th id='${blog.identifier}-identifier'>${blog.identifier.slice(blog.identifier.length - 3)}</th>
             <th id='${blog.identifier}-title_blog'>${blog.title_blog}</th>
             <th id='${blog.identifier}-sub_title'>${blog.sub_title}</th>
             <th id='${blog.identifier}-fecha'>${blog.fecha}</th>
@@ -242,7 +246,13 @@ function addBlogToList(blog){
 function updateBlogInList(blog){
 
 		console.log(blog)
-    blogFields.map( field => $(`#${blog.identifier}-${field}`).text(`${blog[field]}`) );
+    blogFields.map( field => {
+        if(field=="identifier"){
+            $(`#${blog.identifier}-${field}`).text(`${blog[field].slice(blog[field].length - 3)}`) 
+        }else{
+            $(`#${blog.identifier}-${field}`).text(`${blog[field]}`) 
+        }
+    });
     $(`#${blog.identifier}-btn #edit`).attr("onclick", `window.editBlog(`+JSON.stringify(blog)+`)`)
 		$(`#${blog.identifier}-btn #create`).attr("onclick", `window.deleteBlog(`+JSON.stringify(blog)+`)`)
 

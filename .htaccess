@@ -1,2 +1,2 @@
 RewriteEngine on
-RewriteRule ^([a-zA-Z0-9]+)$ index.html?app=$1
+RewriteRule ^([a-zA-Z0-9_]+)$ index.html?app=$1

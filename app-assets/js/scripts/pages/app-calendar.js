@@ -254,13 +254,13 @@ document.addEventListener('DOMContentLoaded', function() {
         dayMaxEvents: 2,
         eventResizableFromStart: true,
         selectable: true,
-        select: function(start, end, jsEvent, view) {
+        /* select: function(start, end, jsEvent, view) {
 
             $("#forappointment").val("")
             $("#appointment-time").val("")
             $("#appointment-date").val(start.startStr)
 
-        },
+        }, */
         customButtons: {
             sidebarToggle: {
                 text: 'Sidebar'
@@ -288,14 +288,14 @@ document.addEventListener('DOMContentLoaded', function() {
             ];
         },
         dateClick: function(info) {
-            var date = moment(info.date).format('YYYY-MM-DD');
+           /*  var date = moment(info.date).format('YYYY-MM-DD');
             resetValues();
             sidebar.modal('show');
             addEventBtn.removeClass('d-none');
             updateEventBtn.addClass('d-none');
             btnDeleteEvent.addClass('d-none');
             startDate.val(date);
-            endDate.val(date);
+            endDate.val(date); */
         },
         eventClick: function(info) {
             eventClick(info);

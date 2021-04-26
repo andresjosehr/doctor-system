@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/tables/datatable/responsive.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
@@ -33,13 +34,21 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/menu/menu-types/horizontal-menu.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/plugins/forms/form-validation.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/pages/app-user.css">
-    <link rel="stylesheet" type="text/css" href="../app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
     <!-- END: Custom CSS-->
+
+    <style>
+        .header-actions, .d-flex.justify-content-between.mx-2.row.mb-1, .dataTables_empty {
+            display: none !important;
+        }
+        .content-body{
+            padding-bottom: 30px !important;
+        }
+    </style>
 
 </head>
 <!-- END: Head-->
@@ -180,27 +189,32 @@
                                         
                                     </g>
                                 </svg></span>
-                         
                         </a></li>
                     <li class="nav-item nav-toggle"><a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse"><i class="d-block d-xl-none text-primary toggle-icon font-medium-4" data-feather="x"></i></a></li>
                 </ul>
             </div>
             <div class="shadow-bottom"></div>
-         <!-- Horizontal menu content-->
-         <div class="navbar-container main-menu-content d-flex justify-content-between" data-menu="menu-container" >
-            <!-- include ../includes/mixins-->
-            <img src="../assets/img/logo.svg" alt="logo" style="width: 10%; box-sizing: border-box; padding: 10px;">
-            <ul class="nav navbar-nav" id="main-menu-navigation" data-menu="menu-navigation" style="justify-content: right">
+              <!-- Horizontal menu content-->
+              <div class="navbar-container main-menu-content d-flex justify-content-between" data-menu="menu-container" >
+                <!-- include ../includes/mixins-->
+                <img src="../assets/img/logo.svg" alt="logo" style="width: 10%; box-sizing: border-box; padding: 10px;">
+                <ul class="nav navbar-nav" id="main-menu-navigation" data-menu="menu-navigation" style="justify-content: right">
                     <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="calendar.html">Calendar</span></a>
                     </li>
-                    <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="users.html">Users</span></a>
+                    <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="appointment.html">Appointment</span></a>
+                    </li>
+                    <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="businessdays.html">Business Days</span></a>
+                    </li>
+                            <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="services.html">Services</span></a>
                             </li>
-                            <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="businessdays.html">Bussines Days</span></a>
+                            <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="blogs.html">Blogs</span></a>
                             </li>
-                            <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="settings.html">Settings</span></a>
+                            <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="reviews.html">Reviews</span></a>
+                            </li>
+                            <li data-menu=""><a class="dropdown-item d-flex align-items-center" href="holidays.html">Holiday</span></a>
                             </li>
                             </li>
-                            <button onClick="window.logoutL()" type="button" class="btn btn-danger" style="margin: 15px;">Sign Out</button>
+                            <button onClick="window.logoutL()" id='logout-btn' type="button" class="btn btn-danger" style="margin: 15px;">Sign Out</button>
                             </li>
                         </ul>
                     </li>
@@ -213,8 +227,7 @@
     <!-- END: Main Menu-->
 
     <!-- BEGIN: Content-->
-     <!-- BEGIN: Content-->
-     <div class="app-content content ">
+    <div class="app-content content ">
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
         <div class="content-wrapper">
@@ -225,11 +238,11 @@
                 <section class="app-user-list">
                     <!-- users filter start -->
                     <div class="card">
-                        <div class="card-header" style="margin-top: 15px">
-                            <h2>Bussines Days</h2>
-
-                            <select onchange="window.changeApp()" class="active select2 select-label form-control w-100" id="apps" name="apps" style='width: 200px !important;'>
-                            </select>
+                        <h2 class="card-header" style="margin-top: 15px">Bussines Days</h2>
+                        <div class="d-flex justify-content-between align-items-center mx-50 row pt-0 pb-2">
+                            <div class="col-md-4 user_role"></div>
+                            <div class="col-md-4 user_plan"></div>
+                            <div class="col-md-4 user_status"></div>
                         </div>
                     </div>
                     <!-- users filter end -->
@@ -377,7 +390,6 @@
         </div>
     </div>
     <!-- END: Content-->
-    <!-- END: Content-->
 
     <div class="sidenav-overlay"></div>
     <div class="drag-target"></div>
@@ -410,7 +422,7 @@
     <!-- END: Page JS-->
 
     <script type="module" src="./../app-assets/js/core/general.js"></script>
-    <script type="module" src="./../app-assets/js/core/admin/businessdays.js"></script>
+    <script type="module" src="./../app-assets/js/core/doctor/businessdays.js"></script>
 
 
     <script>
@@ -422,14 +434,23 @@
                 });
             }
 
-                const dayOfTheWeek= [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" ]
+            /* const dayOfTheWeek= [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" ]
 
-                dayOfTheWeek.map(day =>{
+            dayOfTheWeek.map(day =>{
 
-                    
-                })
+                flatpickr(`#${day} .start`, {
+                    noCalendar: true,
+                    enableTime: true,
+                    dateFormat: "H:i"
+                });
 
-        })
+                flatpickr(`#${day} .end`, {
+                    noCalendar: true,
+                    enableTime: true,
+                    dateFormat: "H:i"
+                });
+            }) */
+        });
     </script>
 </body>
 <!-- END: Body-->
