@@ -163,14 +163,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event click function
     // To edit created events
     function eventClick(info) {
-
+        
         const data = info.event._def.extendedProps
+        console.log(data)
 
         $("#identifier").val(data.identifier);
         $("#appointment-date").val(data.appointmentDate);
         $("#appointment-time").val(data.appointmentTime);
         $("#for_appointment").val(data.forAppointment);
-        $("#service").val(data.service);
+        $("#service").val(data.text_service_item);
 
 
         eventToUpdate = info.event;
@@ -364,7 +365,8 @@ document.addEventListener('DOMContentLoaded', function() {
                   appointmentDate: `${appointment.ano}-${month}-${day}`,
                   appointmentTime: `${hour}:${minute}`,
                   forAppointment: appointment.for_appointment,
-                  service: appointment.service.identifier
+                  service: appointment.service.identifier,
+                  text_service_item: appointment.service.text_service_item
               }
           });
         })

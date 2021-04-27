@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../app-assets/css/core/menu/menu-types/horizontal-menu.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/plugins/forms/form-validation.css">
     <link rel="stylesheet" type="text/css" href="../app-assets/css/pages/app-user.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
@@ -230,42 +231,7 @@
                 <section class="app-user-list">
                     <!-- users filter start -->
                     <div class="card">
-                        <h2 class="card-header">Appointment</h2>
-                        <div class="d-flex justify-content-between align-items-center mx-50 row pt-0 pb-2">
-                            <div class="col-md-4 user_role"></div>
-                            <div class="col-md-4 user_plan"></div>
-                            <div class="col-md-4 user_status"></div>
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap;">
-                            <div class="form-group position-relative col-3">
-                                <label for="start-date" class="form-label">Initial date</label>
-                                <input type="text" class="form-control" id="initial-date" name="initial-date" placeholder="yyyy-mm-dd" />
-                            </div>
-        
-                            
-                            <div class="form-group position-relative col-3">
-                                <label for="start-date" class="form-label">Finish date</label>
-                                <input type="text" class="form-control" id="finish-date" name="finish-date" placeholder="yyyy-mm-dd" />
-                            </div>
-                            <div class="form-group col-3">
-                                <label for="select-label" class="form-label">Service</label>
-                                <select class="select2 select-label form-control w-100" id="select-label" name="select-label">
-                                    <option data-label="primary" value="Choose" selected>Choose</option>
-                                    <option data-label="danger" value="Consultation">Consultation</option>
-                                    <option data-label="warning" value="Crown / Bridge Delivery">Crown / Bridge Delivery</option>
-                                    <option data-label="success" value="Crown / Bridge Prep">Crown / Bridge Prep</option>
-                                    <option data-label="info" value="Emergency">Emergency</option>
-                                    <option data-label="primary" value="Endo">Endo</option>
-                                    <option data-label="danger" value="Oral Surgery">Oral Surgery</option>
-                                    <option data-label="warning" value="Partial / Denture">Partial / Denture</option>
-                                    <option data-label="success" value="Prophy Appointment">Prophy Appointment</option>
-                                    <option data-label="info" value="Regular Appointment">Regular Appointment</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-3" style="padding-top: 20px;">
-                                <a href="#" class="btn btn-success">Refresh</a>
-                            </div>
-                        </div>
+                        <h2 class="card-header">Appointments</h2>
                     </div>
                     <!-- users filter end -->
                     <!-- list section start -->
@@ -274,6 +240,7 @@
                             <table class="user-list-table table">
                                 <thead class="thead-light">
                                     <tr>
+                                        <th>Identifier</th>
                                         <th>User</th>
                                         <th>Date</th>
                                         <th>Patient</th>
@@ -281,8 +248,8 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id='appointment-list'>
-                                    <tr>
+                                <tbody id='appointments-list'>
+                                    <!-- <tr>
                                         <th>s@nelat.com</th>
                                         <th>2021-03-12T11:30:00</th>
                                         <th></th>
@@ -292,7 +259,7 @@
                                           </button> <button type="button" class="btn btn-success" data-toggle="modal" data-target="#notificationModal">
                                             Notification
                                           </button> </th>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>

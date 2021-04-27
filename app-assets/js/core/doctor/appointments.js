@@ -2,8 +2,10 @@ import environment from '../../../../environment.js'
 import { checkLogin, logout, getCookie, checkLonginAdministrator } from './../general.js'
 
 $(document).ready(()=>{
-    getAppointments();
+    getUsers();
 })
+
+let users;
 
 const appointmentFields = ["identifier", "name", "start", "end"]
 let clientMethod = '';
@@ -24,22 +26,20 @@ function getAppointments(){
     request.done(function (response, textStatus, jqXHR){
         let appointmentListHTML = ''
         /* response.services */
-        response.services.map(appointment => {
+        response.map(appointment => {
             if(getCookie("identifier")!=appointment.identifier){
                 appointmentListHTML+=`<tr id='${appointment.identifier}'>
-                                    <th id='${appointment.identifier}-identifier'>${appointment.identifier}</th>
-                                    <th id='${appointment.identifier}-for_appointment'>${appointment.for_appointment}</th>
-                                    <th id='${appointment.identifier}-btn'>
-                                    <th>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#emailModal">
-                                            Email
-                                        </button> 
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#notificationModal">
-                                            Notification
-                                        </button> 
-                                    </th>
-                                    </th>
-                                </tr>`
+                                        <th id='${appointment.identifier}-identifier'>${appointment.identifier.slice(appointment.identifier.length - 3)}</th>
+                                        <th id='${appointment.identifier}-user'>${users.find(user => user.identifier==appointment.user).email }</th>
+                                        <th id='${appointment.identifier}-time'>${formatDate(appointment.time)}</th>
+                                        <th id='${appointment.identifier}-for_appointment'>${appointment.for_appointment}</th>
+                                        <th id='${appointment.identifier}-service'>${appointment.service.text_service_item}</th>
+                                        <th id='${appointment.identifier}-btn'> 
+                                                <button onClick='window.sendNotification("${appointment.user}")' type="button" class="btn btn-success">
+                                                    Notification
+                                                </button> 
+                                        </th>
+                                    </tr>`
             }
         });
 
@@ -48,10 +48,55 @@ function getAppointments(){
     });
     
     request.fail(function (jqXHR, textStatus, errorThrown){
-        alert("Se ha producido un error en la consulta de usuarios")
+        alert("Se ha producido un error en la consultaç de usuarios")
     });
 
 
+
+}
+
+
+window.sendNotification=(identifier)=>{
+
+    const request = $.ajax({
+        url: `${environment.apiURL}/v1/appointments/${identifier}/push`,
+        type: "get",
+        beforeSend: function(req) {
+            req.setRequestHeader("accept", "application/json");
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("Authorization", getCookie("Authorization"));
+        }
+    });
+    
+    request.done(function (response, textStatus, jqXHR){
+        swal("Done", `Notification send succefully`, "success");
+    });
+    
+    request.fail(function (jqXHR, textStatus, errorThrown){
+        swal("Error", `An error occurred during request`, "warning");
+    });
+
+
+
+}
+
+
+function getUsers(){
+
+    const request = $.ajax({
+        url: `${environment.apiURL}/v1/users`,
+        type: "get",
+        beforeSend: function(req) {
+            req.setRequestHeader("accept", "application/json");
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("Authorization", getCookie("Authorization"));
+        }
+    });
+
+    request.done(function (response, textStatus, jqXHR){
+        users = response
+        getAppointments();
+    });
 
 }
 
@@ -74,7 +119,10 @@ function formatDate(date){
     let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
     let mo = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(d);
     let da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
-    return `${ye}-${mo}-${da}`
+    let ho = new Intl.DateTimeFormat('en', { hour: 'numeric', hour12: false }).format(d);
+    let mi = new Intl.DateTimeFormat('en', { minute: 'numeric', hour12: false }).format(d);
+
+    return `${ye}-${mo}-${da} ${ho}:${mi}`
 }
 
 window.createAppointment=()=>{
@@ -174,7 +222,7 @@ window.manageAppointment=()=>{
 function addAppointmentToList(appointment){
     $("#appointments-list").append(
         `<tr id='${appointment.identifier}'>
-                            <th id='${appointment.identifier}-identifier'>${appointment.identifier}</th>
+                            <th id='${appointment.identifier}-identifier'>${appointment.identifier.slice(appointment.identifier.length - 3)}</th>
                             <th id='${appointment.identifier}-name'>${appointment.name}</th>
                             <th id='${appointment.identifier}-start'>${formatDate(appointment.start)}</th>
                             <th id='${appointment.identifier}-end'>${formatDate(appointment.end)}</th>
