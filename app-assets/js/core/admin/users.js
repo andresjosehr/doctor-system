@@ -2,11 +2,32 @@ import environment from '../../../../environment.js'
 import { checkLogin, logout, getCookie, checkLonginAdministrator } from './../general.js'
 
 $(document).ready(()=>{
-    getUsers()
+    getUsers();
+    getApps();
 })
 
 const userFields = ["identifier", "email", "password", "phone", "active", "type_users", "app"]
 let clientMethod = '';
+
+function getApps(){
+
+    const request = $.ajax({
+        url: `${environment.apiURL}/v1/apps`,
+        type: "get",
+        beforeSend: function(req) {
+            req.setRequestHeader("accept", "application/json");
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("Authorization", getCookie("Authorization"));
+          }
+    });
+
+    request.done(function (response, textStatus, jqXHR){
+        let apps = ''
+        response.map(app => apps = `<option data-label="danger" value="${app.name_app}">${app.name_app}</option>` )
+
+        $("#app").append(apps)
+    });
+}
 
 
 function getUsers(){
@@ -163,7 +184,7 @@ window.manageUser=()=>{
         $("#user-btn").show();
         $("#user-spinner").hide();
         $("#form-error").text(jqXHR.responseJSON.message)
-        swal("Done", `An error ocurred during request`, "warning");
+        swal("Error", `An error ocurred during request`, "warning");
 
     });
 

@@ -320,11 +320,11 @@
                                 </div>
                                 <div class="modal-body" >
                                    <div style="display: flex; box-sizing: border-box;">
-                                        <div class="form-group position-relative" style="width: 25%; margin: 0px 10px 10px 10px">
+                                        <!-- <div class="form-group position-relative" style="width: 25%; margin: 0px 10px 10px 10px">
                                             <label for="identifier" class="form-label">Identifier</label>
                                             <input type="text" class="form-control" id="identifier" name="identifier" placeholder="0" disabled/>
-                                        </div>
-                                        <div class="form-group position-relative" style="width: 65%; margin: 0px 10px 10px 10px">
+                                        </div> -->
+                                        <div class="form-group position-relative" style="width: 100%;margin: 0px 10px 10px 5px;">
                                             <label for="email" class="form-label">E-mail</label>
                                             <input type="text" class="form-control" id="email" name="email" placeholder=""/>
                                             <span style="display: none;" id="email-error" class="error">Required</span>
@@ -358,7 +358,7 @@
                                                 <label for="type_users" class="form-label">Level</label>
                                                 <select class="select2 type_users form-control w-100" id="type_users" name="type_users">
                                                     <option data-label="primary" value="Patient" selected>Patient</option>
-                                                    <option data-label="danger" value="doctors">doctors</option>
+                                                    <option data-label="danger" value="doctors">Doctor</option>
                                                     
                                                 </select>
                                                 <span style="display: none;" id="type_users-error" class="error">Required</span>
@@ -367,7 +367,9 @@
                                         <div class="form-group position-relative" style="width: 91%;">
                                             <div style="width: 100%;margin: 0px 10px 5px 10px">
                                                 <label for="app" class="form-label">Application</label>
-                                                <input type="text" class="form-control" id="app" name="app" placeholder=""/>
+
+                                                <select class="select2 type_users form-control w-100" id="app" name="app">                                                    
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
