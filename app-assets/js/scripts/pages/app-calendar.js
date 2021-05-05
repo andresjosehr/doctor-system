@@ -350,19 +350,19 @@ document.addEventListener('DOMContentLoaded', function() {
       request.done(function(response, textStatus, jqXHR) {
         response.map(appointment =>{
 
-          let month  = appointment.mes.toString().length == 1 ? "0"+appointment.mes : appointment.mes
-          let day    = appointment.dia.toString().length == 1 ? "0"+appointment.dia : appointment.dia
-          let hour   = appointment.hora.toString().length == 1 ? "0"+appointment.hora : appointment.hora
-          let minute = appointment.minuto.toString().length == 1 ? "0"+appointment.minuto : appointment.minuto
+          let month  = appointment.month.toString().length == 1 ? "0"+appointment.month : appointment.month
+          let day    = appointment.day.toString().length == 1 ? "0"+appointment.day : appointment.day
+          let hour   = appointment.hours.toString().length == 1 ? "0"+appointment.hours : appointment.hours
+          let minute = appointment.minutes.toString().length == 1 ? "0"+appointment.minutes : appointment.minutes
 
-
+         console.log(month, day, hour, minute)
         calendar.addEvent({
               id: calendar.getEvents().length + 1,
               title: `${hour}:${minute} ${appointment.for_appointment}`,
-              start: `${appointment.ano}-${month}-${day}`,
+              start: `${appointment.year}-${month}-${day}`,
               extendedProps: {
                   identifier: response.identifier,
-                  appointmentDate: `${appointment.ano}-${month}-${day}`,
+                  appointmentDate: `${appointment.year}-${month}-${day}`,
                   appointmentTime: `${hour}:${minute}`,
                   forAppointment: appointment.for_appointment,
                   service: appointment.service.identifier,
