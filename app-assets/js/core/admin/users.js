@@ -113,6 +113,7 @@ window.manageUser = () => {
     $("#form-error").text("")
     $("#email-invalid-error").hide()
     $(".password-match-error").hide()
+    $(".phone-invalid-error").hide()
     userFields.map(field => {
         $(`#${field}-error`).hide()
         if (!$(`#${field}`).val()) {
@@ -144,6 +145,12 @@ window.manageUser = () => {
     if ($("#password").val() != $("#password2").val()) {
 
         $(".password-match-error").show()
+        return;
+    }
+
+    if ($("#phone").val().charAt(0)!="+") {
+        
+        $(".phone-invalid-error").show()
         return;
     }
 
@@ -247,9 +254,11 @@ function validateEmail(email) {
 }
 
 window.isNumber = (evt) => {
+    
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    console.log(charCode)
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode != 43) {
         return false;
     }
     return true;
