@@ -2,14 +2,18 @@ import environment from '../../../../environment.js'
 import { checkLogin, logout, getCookie } from '../general.js'
 
 
-$(document).ready(()=>{
+$(document).ready(() => {
     getBlogs();
+
+    $("input[type=file]").on('change', function() {
+        $("#file-name").text(getFileName())
+    });
 });
 
 const blogFields = ["identifier", "sub_title", "text_blog", "title_blog"]
 let blogMethod = '';
 
-function getBlogs(){
+function getBlogs() {
 
     const request = $.ajax({
         url: `${environment.apiURL}/v1/blogs`,
@@ -18,14 +22,15 @@ function getBlogs(){
             req.setRequestHeader("accept", "application/json");
             req.setRequestHeader("Content-Type", "application/json");
             req.setRequestHeader("Authorization", getCookie("Authorization"));
-          }
+        }
     });
-    
-    request.done(function (response, textStatus, jqXHR){
+
+    request.done(function(response, textStatus, jqXHR) {
         let blogsListHTML = ''
-        response.map(blog => {
-                blogsListHTML+=`<tr id='${blog.identifier}'>
-                                    <th id='${blog.identifier}-identifier'>${blog.identifier.slice(blog.identifier.length - 3)}</th>
+        response.map((blog, index) => {
+            blogsListHTML += `<tr id='${blog.identifier}'>
+                                    <th style='display: none' id='${blog.identifier}-identifier'>${blog.identifier}</th>
+                                    <th id='${blog.identifier}-counter'>${index+1}</th> 
                                     <th id='${blog.identifier}-title_blog'>${blog.title_blog}</th>
                                     <th id='${blog.identifier}-sub_title'>${blog.sub_title}</th>
                                     <th id='${blog.identifier}-fecha'>${blog.fecha}</th>
@@ -34,10 +39,10 @@ function getBlogs(){
                                     </th>
 																		
                                     <th id='${blog.identifier}-btn' style=" display: flex; width: 180px; justify-content: space-between;">
-                                        <button onClick='window.editBlog(`+JSON.stringify(blog)+`)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#blogModal">
+                                        <button onClick='window.editBlog(` + JSON.stringify(blog) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#blogModal">
                                             Edit
                                         </button>
-																				<button onClick='window.deleteBlog(`+JSON.stringify(blog)+`)' type="button" class="btn btn-danger">
+																				<button onClick='window.deleteBlog(` + JSON.stringify(blog) + `)' type="button" class="btn btn-danger">
                                             Delete
                                         </button>
                                     </th>
@@ -45,10 +50,10 @@ function getBlogs(){
         });
 
         $("#blogs-list").html(blogsListHTML)
-        
+
     });
-    
-    request.fail(function (jqXHR, textStatus, errorThrown){
+
+    request.fail(function(jqXHR, textStatus, errorThrown) {
         alert("Se ha producido un error en la consulta de blogs")
     });
 
@@ -58,63 +63,65 @@ function getBlogs(){
 
 
 
-window.editBlog=(blog)=>{
+window.editBlog = (blog) => {
 
+    $("#file-name").text("")
     $("#img-blog-edit img").attr("src", `${environment.apiURL}/images/blogs/${blog.identifier}/photo`);
     $("#img-blog-edit img").show();
 
-   $("#form-error").text("")
-   blogFields.map(field => $(`#${field}-error`).hide() )
+    $("#form-error").text("")
+    blogFields.map(field => $(`#${field}-error`).hide())
 
-   blogMethod="edit"
-   blogFields.map((field) => $(`#${field}`).val(String(blog[field])) )
-    
+    blogMethod = "edit"
+    blogFields.map((field) => $(`#${field}`).val(String(blog[field])))
+
 }
 
 
-window.createBlog=()=>{
+window.createBlog = () => {
+
+    $("#file-name").text("")
 
     $("#img-blog-edit img").hide();
 
     $("#form-error").text("")
-    blogFields.map(field => $(`#${field}-error`).hide() )
+    blogFields.map(field => $(`#${field}-error`).hide())
 
-    blogMethod="create" 
+    blogMethod = "create"
     blogFields.map((field) => $(`#${field}`).val(""))
 
 }
 
 
-window.manageBlog=()=>{
+window.manageBlog = () => {
 
     $("#form-error").text("")
 
-    blogFields.map(field =>{
+    blogFields.map(field => {
         $(`#${field}-error`).hide()
-        if(!$(`#${field}`).val()){
+        if (!$(`#${field}`).val()) {
             $(`#${field}-error`).show()
         }
     });
 
-    if(
-        !$('#sub_title').val()       ||
-        !$("#text_blog").val()       ||
+    if (!$('#sub_title').val() ||
+        !$("#text_blog").val() ||
         !$("#title_blog").val()
-    ){
-        
+    ) {
+
         return;
 
     }
 
     const identifier = $("#identifier").val();
-    const path = blogMethod=="create" ? "/v1/blogs" : `/v1/blogs/${identifier}`;
+    const path = blogMethod == "create" ? "/v1/blogs" : `/v1/blogs/${identifier}`;
 
     const blogData = {
-        sub_title:  $('#sub_title').val(),
-        text_blog:  $("#text_blog").val(),
+        sub_title: $('#sub_title').val(),
+        text_blog: $("#text_blog").val(),
         title_blog: $("#title_blog").val(),
-				app: getCookie("application"),
-				active: true
+        app: getCookie("application"),
+        active: true
     }
 
 
@@ -122,20 +129,20 @@ window.manageBlog=()=>{
     $("#blog-spinner").show()
     const request = $.ajax({
         url: `${environment.apiURL}${path}`,
-        type: blogMethod=="create" ? "post" : "patch",
+        type: blogMethod == "create" ? "post" : "patch",
         beforeSend: function(req) {
             req.setRequestHeader("accept", "application/json");
             req.setRequestHeader("Content-Type", "application/json");
             req.setRequestHeader("Authorization", getCookie("Authorization"));
         },
         data: JSON.stringify(blogData)
-    }); 
-    
-
-     request.done((response)=>{
+    });
 
 
-        if(blogMethod=="create"){
+    request.done((response) => {
+
+
+        if (blogMethod == "create") {
             uploadBlogPhoto(response, blogMethod);
         } else {
             uploadBlogPhoto(blogData, blogMethod);
@@ -143,9 +150,9 @@ window.manageBlog=()=>{
 
         $("#blogModal").modal('hide');
 
-    }); 
+    });
 
-    request.fail(function (jqXHR, textStatus, errorThrown){
+    request.fail(function(jqXHR, textStatus, errorThrown) {
 
         $("#blog-btn").show();
         $("#blog-spinner").hide();
@@ -158,9 +165,9 @@ window.manageBlog=()=>{
 }
 
 
-function uploadBlogPhoto(blog, blogMethod){
+function uploadBlogPhoto(blog, blogMethod) {
 
-    if($('#photo')[0].files[0]){
+    if ($('#photo')[0].files[0]) {
         const data = new FormData();
         data.append("blog", $('#photo')[0].files[0])
 
@@ -174,57 +181,62 @@ function uploadBlogPhoto(blog, blogMethod){
                 req.setRequestHeader("Authorization", getCookie("Authorization"));
             },
             data: data
-        }); 
+        });
 
 
-				let actionWord=blogMethod=="create" ? "created" : "updated";
+        let actionWord = blogMethod == "create" ? "created" : "updated";
 
-        request.done((response)=>{
-   
-   
-           $("#blog-btn").show()
-           $("#blog-spinner").hide()
-           swal("Done", `The blog was ${actionWord} succefully`, "success");
-   
-   
-           if(blogMethod=="create"){
-               addBlogToList(blog);
-           } else {
-               updateBlogInLit({identifier: $('#identifier').val().slice($('#identifier').val().length - 3), ...blogData});
-           }
-       }); 
-   
-       request.fail(function (jqXHR, textStatus, errorThrown){
-   
-           $("#blog-btn").show();
-           $("#blog-spinner").hide();
-           $("#form-error").text(jqXHR.responseJSON.message)
-           swal("Done", `An error ocurred during request`, "warning");
-   
-       });
+        request.done((response) => {
+
+
+            $("#blog-btn").show()
+            $("#blog-spinner").hide()
+            swal("Done", `The blog was ${actionWord} succefully`, "success");
+
+
+            if (blogMethod == "create") {
+                addBlogToList(blog);
+            } else {
+                updateBlogInLit({ identifier: $('#identifier').val().slice($('#identifier').val().length - 3), ...blogData });
+            }
+        });
+
+        request.fail(function(jqXHR, textStatus, errorThrown) {
+
+            $("#blog-btn").show();
+            $("#blog-spinner").hide();
+            $("#form-error").text(jqXHR.responseJSON.message)
+            swal("Done", `An error ocurred during request`, "warning");
+
+        });
     } else {
 
-			let actionWord=blogMethod=="create" ? "created" : "updated";
+        let actionWord = blogMethod == "create" ? "created" : "updated";
 
-			$("#blog-btn").show();
-			$("#blog-spinner").hide();
-			swal("Done", `The blog was ${actionWord} succefully`, "success");
+        $("#blog-btn").show();
+        $("#blog-spinner").hide();
+        swal("Done", `The blog was ${actionWord} succefully`, "success");
 
-			if(blogMethod=="create"){
-					addBlogToList(blog);
-			} else {
-				updateBlogInList({identifier: $('#identifier').val(), ...blog});
-			}
-		}
+        if (blogMethod == "create") {
+            addBlogToList(blog);
+        } else {
+            updateBlogInList({ identifier: $('#identifier').val(), ...blog });
+        }
+    }
 
 }
 
 
 
-function addBlogToList(blog){
+function addBlogToList(blog) {
+
+    let counter = parseFloat($("#blogs-list tr").last().find("th:nth-child(2)").text()) + 1
+    counter = counter > 0 ? counter : 1
+
     $("#blogs-list").append(
         `<tr id='${blog.identifier}'>
-            <th id='${blog.identifier}-identifier'>${blog.identifier.slice(blog.identifier.length - 3)}</th>
+            <th style='display: none' id='${blog.identifier}-identifier'>${blog.identifier}</th>
+            <th id='${blog.identifier}-counter'>${counter}</th>
             <th id='${blog.identifier}-title_blog'>${blog.title_blog}</th>
             <th id='${blog.identifier}-sub_title'>${blog.sub_title}</th>
             <th id='${blog.identifier}-fecha'>${blog.fecha}</th>
@@ -232,10 +244,10 @@ function addBlogToList(blog){
                 <img style='width: 70px;' src='${environment.apiURL}/images/blogs/${blog.identifier}/photo' />
             </th>
             <th id='${blog.identifier}-btn' style=" display: flex; width: 180px; justify-content: space-between;">
-                    <button id="edit" onClick='window.editBlog(`+JSON.stringify(blog)+`)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#blogModal">
+                    <button id="edit" onClick='window.editBlog(` + JSON.stringify(blog) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#blogModal">
                         Edit
                     </button>
-										<button id="delete" onClick='window.deleteBlog(`+JSON.stringify(blog)+`)' type="button" class="btn btn-danger">
+										<button id="delete" onClick='window.deleteBlog(` + JSON.stringify(blog) + `)' type="button" class="btn btn-danger">
                             Delete
                     </button>
                 </th>
@@ -243,55 +255,66 @@ function addBlogToList(blog){
     )
 }
 
-function updateBlogInList(blog){
+function updateBlogInList(blog) {
 
-		console.log(blog)
-    blogFields.map( field => {
-        if(field=="identifier"){
-            $(`#${blog.identifier}-${field}`).text(`${blog[field].slice(blog[field].length - 3)}`) 
-        }else{
-            $(`#${blog.identifier}-${field}`).text(`${blog[field]}`) 
+    console.log(blog)
+    blogFields.map(field => {
+        if (field == "identifier") {
+            $(`#${blog.identifier}-${field}`).text(`${blog[field].slice(blog[field].length - 3)}`)
+        } else {
+            $(`#${blog.identifier}-${field}`).text(`${blog[field]}`)
         }
     });
-    $(`#${blog.identifier}-btn #edit`).attr("onclick", `window.editBlog(`+JSON.stringify(blog)+`)`)
-		$(`#${blog.identifier}-btn #create`).attr("onclick", `window.deleteBlog(`+JSON.stringify(blog)+`)`)
+    $(`#${blog.identifier}-btn #edit`).attr("onclick", `window.editBlog(` + JSON.stringify(blog) + `)`)
+    $(`#${blog.identifier}-btn #create`).attr("onclick", `window.deleteBlog(` + JSON.stringify(blog) + `)`)
 
 }
 
-window.deleteBlog = (blog) =>{
-	const message = swal({
-			title: "Wait!",
-			text: "Are you sure to delete this blog?",
-			icon: "warning",
-			buttons: true,
-			dangerMode: true,
-		}).then((willDelete) => {
+window.deleteBlog = (blog) => {
+    const message = swal({
+        title: "Wait!",
+        text: "Are you sure to delete this blog?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
 
-			if (willDelete) {
+        if (willDelete) {
 
-				const request = $.ajax({
-							url: `${environment.apiURL}/v1/blogs/${blog.identifier}`,
-							type: "delete",
-							beforeSend: function(req) {
-									req.setRequestHeader("accept", "application/json");
-									req.setRequestHeader("Content-Type", "application/json");
-									req.setRequestHeader("Authorization", getCookie("Authorization"));
-							}
-					}); 
-					
-			
-					request.done((response)=>{
-						swal("Blog deleted", { icon: "success" });
-						$(`#${blog.identifier}`).remove();
-					}); 
-			
-					request.fail(function (jqXHR, textStatus, errorThrown){
-			
-						swal("An error ocurred during request", { icon: "warning" });
-			
-					});
+            const request = $.ajax({
+                url: `${environment.apiURL}/v1/blogs/${blog.identifier}`,
+                type: "delete",
+                beforeSend: function(req) {
+                    req.setRequestHeader("accept", "application/json");
+                    req.setRequestHeader("Content-Type", "application/json");
+                    req.setRequestHeader("Authorization", getCookie("Authorization"));
+                }
+            });
 
-			} else {
-			}
-		});
+
+            request.done((response) => {
+                swal("Blog deleted", { icon: "success" });
+                $(`#${blog.identifier}`).remove();
+            });
+
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+
+                swal("An error ocurred during request", { icon: "warning" });
+
+            });
+
+        } else {}
+    });
+}
+
+function getFileName() {
+    var fullPath = $("#photo").val();
+    if (fullPath) {
+        var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+        var filename = fullPath.substring(startIndex);
+        if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+            filename = filename.substring(1);
+        }
+        return filename;
+    }
 }

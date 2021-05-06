@@ -2,14 +2,14 @@ import environment from '../../../../environment.js'
 import { checkLogin, logout, getCookie } from '../general.js'
 
 
-$(document).ready(()=>{
+$(document).ready(() => {
     getTestimonials();
 });
 
 const testimonialFields = ["identifier", "fecha", "name", "photo", "text_testimonials", "active"]
 let testimonialMethod = '';
 
-function getTestimonials(){
+function getTestimonials() {
 
     const request = $.ajax({
         url: `${environment.apiURL}/v1/testimonials`,
@@ -18,15 +18,16 @@ function getTestimonials(){
             req.setRequestHeader("accept", "application/json");
             req.setRequestHeader("Content-Type", "application/json");
             req.setRequestHeader("Authorization", getCookie("Authorization"));
-          }
+        }
     });
-    
-    request.done(function (response, textStatus, jqXHR){
+
+    request.done(function(response, textStatus, jqXHR) {
         let testimonialsListHTML = ''
-        response.map(testimonial => {
-            testimonialsListHTML+=
-                                `<tr id='${testimonial.identifier}'>
-                                    <th id='${testimonial.identifier}-identifier'>${testimonial.identifier.slice(testimonial.identifier.length - 3)}</th>
+        response.map((testimonial, index) => {
+            testimonialsListHTML +=
+                `<tr id='${testimonial.identifier}'>
+                                    <th style='display: none' id='${testimonial.identifier}-identifier'>${testimonial.identifier}</th>
+                                    <th id='${testimonial.identifier}-counter'>${index+1}</th> 
                                     <th id='${testimonial.identifier}-fecha'>${formatDate(testimonial.fecha)}</th>
                                     <th id='${testimonial.identifier}-name'>${testimonial.name}</th>
                                     <th id='${testimonial.identifier}-text_testimonials'>${testimonial.text_testimonials}</th>
@@ -35,10 +36,10 @@ function getTestimonials(){
                                     </th>
                                                                         
                                     <th id='${testimonial.identifier}-btn' style=" display: flex; width: 180px; justify-content: space-between;">
-                                        <button onClick='window.editTestimonial(`+JSON.stringify(testimonial)+`)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewsModal">
+                                        <button onClick='window.editTestimonial(` + JSON.stringify(testimonial) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewsModal">
                                             Edit
                                         </button>
-                                                                                <button onClick='window.deleteTestimonial(`+JSON.stringify(testimonial)+`)' type="button" class="btn btn-danger">
+                                                                                <button onClick='window.deleteTestimonial(` + JSON.stringify(testimonial) + `)' type="button" class="btn btn-danger">
                                             Delete
                                         </button>
                                     </th>
@@ -46,10 +47,10 @@ function getTestimonials(){
         });
 
         $("#testimonials-list").html(testimonialsListHTML)
-        
+
     });
-    
-    request.fail(function (jqXHR, textStatus, errorThrown){
+
+    request.fail(function(jqXHR, textStatus, errorThrown) {
         alert("Se ha producido un error en la consulta de testimonials")
     });
 
@@ -59,67 +60,66 @@ function getTestimonials(){
 
 
 
-window.editTestimonial=(testimonial)=>{
+window.editTestimonial = (testimonial) => {
 
-   $("#img-testimonial-edit img").show();
+    $("#img-testimonial-edit img").show();
 
-   $("#form-error").text("")
-   testimonialFields.map(field => $(`#${field}-error`).hide() )
+    $("#form-error").text("")
+    testimonialFields.map(field => $(`#${field}-error`).hide())
 
-   testimonialMethod="edit"
-   testimonialFields.map((field) => {
-       if(field!="photo") {
-        $(`#${field}`).val(String(testimonial[field]))   
-       }
-    } )
+    testimonialMethod = "edit"
+    testimonialFields.map((field) => {
+        if (field != "photo") {
+            $(`#${field}`).val(String(testimonial[field]))
+        }
+    })
 
     $("#fecha").val(formatDate($("#fecha").val()))
-    
+
 }
 
 
-window.createTestimonial=()=>{
+window.createTestimonial = () => {
 
     $("#img-testimonial-edit img").hide();
 
     $("#form-error").text("")
-    testimonialFields.map(field => $(`#${field}-error`).hide() )
+    testimonialFields.map(field => $(`#${field}-error`).hide())
 
-    testimonialMethod="create" 
+    testimonialMethod = "create"
     testimonialFields.map((field) => $(`#${field}`).val(""))
 
 
 }
 
 
-window.manageTestimonial=()=>{
+window.manageTestimonial = () => {
 
     $("#form-error").text("")
 
-    testimonialFields.map(field =>{
+    testimonialFields.map(field => {
         $(`#${field}-error`).hide()
-        if(!$(`#${field}`).val()){
+        if (!$(`#${field}`).val()) {
             $(`#${field}-error`).show()
         }
     });
 
-    if(
-        !$('#name').val()     ||
-        !$("#fecha").val()   ||
+    if (!$('#name').val() ||
+        !$("#fecha").val() ||
         !$("#text_testimonials").val()
-    ){
-        
+    ) {
+
         return;
 
     }
 
     const identifier = $("#identifier").val();
-    const path = testimonialMethod=="create" ? "/v1/testimonials" : `/v1/testimonials/${identifier}`;
+    const path = testimonialMethod == "create" ? "/v1/testimonials" : `/v1/testimonials/${identifier}`;
 
     const testimonialData = {
-        name:  $('#name').val(),
-        fecha:  $("#fecha").val(),
-        active: $("#active-label").val()=="true",
+        name: $('#name').val(),
+        fecha: $("#fecha").val(),
+        active: $("#active-label").val() == "true",
         text_testimonials: $("#text_testimonials").val(),
         app: getCookie("application"),
     }
@@ -132,42 +132,42 @@ window.manageTestimonial=()=>{
     $("#testimonial-spinner").show()
     const request = $.ajax({
         url: `${environment.apiURL}${path}`,
-        type: testimonialMethod=="create" ? "post" : "patch",
+        type: testimonialMethod == "create" ? "post" : "patch",
         beforeSend: function(req) {
             req.setRequestHeader("accept", "application/json");
             req.setRequestHeader("Content-Type", "application/json");
             req.setRequestHeader("Authorization", getCookie("Authorization"));
         },
         data: JSON.stringify(testimonialData)
-    }); 
-    
+    });
 
-     request.done((response)=>{
 
-        if($('#photo')[0].files[0]){
-            if(testimonialMethod=="create"){
+    request.done((response) => {
+
+        if ($('#photo')[0].files[0]) {
+            if (testimonialMethod == "create") {
                 uploadTestimonialPhoto(response, testimonialMethod);
             } else {
                 uploadTestimonialPhoto(testimonialData, testimonialMethod);
             }
-        } else{
-            if(testimonialMethod=="create"){
+        } else {
+            if (testimonialMethod == "create") {
                 addTestimonialToList(response);
             } else {
-                updateTestimonialInList({identifier: $('#identifier').val(), ...testimonialData});
+                updateTestimonialInList({ identifier: $('#identifier').val(), ...testimonialData });
             }
         }
 
-        let actionWord=testimonialMethod=="create" ? "created" : "updated";
+        let actionWord = testimonialMethod == "create" ? "created" : "updated";
         $("#reviewsModal").modal("hide")
         $("#testimonial-btn").show()
         $("#testimonial-spinner").hide()
         swal("Done", `The testimonial was ${actionWord} succefully`, "success");
 
-        
-    }); 
 
-    request.fail(function (jqXHR, textStatus, errorThrown){
+    });
+
+    request.fail(function(jqXHR, textStatus, errorThrown) {
 
         $("#testimonial-btn").show();
         $("#testimonial-spinner").hide();
@@ -180,9 +180,9 @@ window.manageTestimonial=()=>{
 }
 
 
-function uploadTestimonialPhoto(testimonial, testimonialMethod){
+function uploadTestimonialPhoto(testimonial, testimonialMethod) {
     const iden = testimonial.identifier ? testimonial.identifier : $("#identifier").val()
-    if($('#photo')[0].files[0]){
+    if ($('#photo')[0].files[0]) {
         const data = new FormData();
         data.append("testimonial", $('#photo')[0].files[0])
 
@@ -196,57 +196,62 @@ function uploadTestimonialPhoto(testimonial, testimonialMethod){
                 req.setRequestHeader("Authorization", getCookie("Authorization"));
             },
             data: data
-        }); 
+        });
 
 
-                let actionWord=testimonialMethod=="create" ? "created" : "updated";
+        let actionWord = testimonialMethod == "create" ? "created" : "updated";
 
-        request.done((response)=>{
-   
-   
-           $("#testimonial-btn").show()
-           $("#testimonial-spinner").hide()
-           swal("Done", `The testimonial was ${actionWord} succefully`, "success");
-   
-   
-           if(testimonialMethod=="create"){
-               addTestimonialToList(testimonial);
-           } else {
-            updateTestimonialInList({identifier: $('#identifier').val(), ...testimonialData});
-           }
-       }); 
-   
-       request.fail(function (jqXHR, textStatus, errorThrown){
-   
-           $("#testimonial-btn").show();
-           $("#testimonial-spinner").hide();
-           $("#form-error").text(jqXHR.responseJSON.message)
-           swal("Done", `An error ocurred during request`, "warning");
-   
-       });
-    } else {
+        request.done((response) => {
 
-            let actionWord=testimonialMethod=="create" ? "created" : "updated";
+
+            $("#testimonial-btn").show()
+            $("#testimonial-spinner").hide()
+            swal("Done", `The testimonial was ${actionWord} succefully`, "success");
+
+
+            if (testimonialMethod == "create") {
+                addTestimonialToList(testimonial);
+            } else {
+                updateTestimonialInList({ identifier: $('#identifier').val(), ...testimonialData });
+            }
+        });
+
+        request.fail(function(jqXHR, textStatus, errorThrown) {
 
             $("#testimonial-btn").show();
             $("#testimonial-spinner").hide();
-            swal("Done", `The testimonial was ${actionWord} succefully`, "success");
+            $("#form-error").text(jqXHR.responseJSON.message)
+            swal("Done", `An error ocurred during request`, "warning");
 
-            if(testimonialMethod=="create"){
-                    addTestimonialToList(testimonial);
-            } else {
-                updateTestimonialInList({identifier: $('#identifier').val(), ...testimonial});
-            }
+        });
+    } else {
+
+        let actionWord = testimonialMethod == "create" ? "created" : "updated";
+
+        $("#testimonial-btn").show();
+        $("#testimonial-spinner").hide();
+        swal("Done", `The testimonial was ${actionWord} succefully`, "success");
+
+        if (testimonialMethod == "create") {
+            addTestimonialToList(testimonial);
+        } else {
+            updateTestimonialInList({ identifier: $('#identifier').val(), ...testimonial });
         }
+    }
 
 }
 
 
 
-function addTestimonialToList(testimonial){
+function addTestimonialToList(testimonial) {
+
+    let counter = parseFloat($("#testimonials-list tr").last().find("th:nth-child(2)").text()) + 1
+    counter = counter > 0 ? counter : 1
+
     $("#testimonials-list").append(
         `<tr id='${testimonial.identifier}'>
-                                    <th id='${testimonial.identifier}-identifier'>${testimonial.identifier.slice(testimonial.identifier.length - 3)}</th>
+                                    <th style='display: none' id='${testimonial.identifier}-identifier'>${testimonial.identifier}</th>
+                                    <th id='${testimonial.identifier}-counter'>${counter}</th>
                                     <th id='${testimonial.identifier}-fecha'>${formatDate(testimonial.fecha)}</th>
                                     <th id='${testimonial.identifier}-name'>${testimonial.name}</th>
                                     <th id='${testimonial.identifier}-text_testimonials'>${testimonial.text_testimonials}</th>
@@ -255,10 +260,10 @@ function addTestimonialToList(testimonial){
                                     </th>
                                                                         
                                     <th id='${testimonial.identifier}-btn' style=" display: flex; width: 180px; justify-content: space-between;">
-                                        <button onClick='window.editTestimonial(`+JSON.stringify(testimonial)+`)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewsModal">
+                                        <button onClick='window.editTestimonial(` + JSON.stringify(testimonial) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewsModal">
                                             Edit
                                         </button>
-                                                                                <button onClick='window.deleteTestimonial(`+JSON.stringify(testimonial)+`)' type="button" class="btn btn-danger">
+                                                                                <button onClick='window.deleteTestimonial(` + JSON.stringify(testimonial) + `)' type="button" class="btn btn-danger">
                                             Delete
                                         </button>
                                     </th>
@@ -266,60 +271,59 @@ function addTestimonialToList(testimonial){
     )
 }
 
-function updateTestimonialInList(testimonial){
+function updateTestimonialInList(testimonial) {
 
-    testimonialFields.map( field => {
-        if(field=="identifier"){
-            $(`#${testimonial.identifier}-${field}`).text(`${testimonial[field].slice(testimonial[field].length - 3)}`) 
-        }else {
-            $(`#${testimonial.identifier}-${field}`).text(`${testimonial[field]}`) 
+    testimonialFields.map(field => {
+        if (field == "identifier") {
+            $(`#${testimonial.identifier}-${field}`).text(`${testimonial[field].slice(testimonial[field].length - 3)}`)
+        } else {
+            $(`#${testimonial.identifier}-${field}`).text(`${testimonial[field]}`)
         }
     });
 
-    $(`#${testimonial.identifier}-btn #edit`).attr("onclick", `window.editTestimonial(`+JSON.stringify(testimonial)+`)`)
-    $(`#${testimonial.identifier}-btn #create`).attr("onclick", `window.deleteTestimonial(`+JSON.stringify(testimonial)+`)`)
+    $(`#${testimonial.identifier}-btn #edit`).attr("onclick", `window.editTestimonial(` + JSON.stringify(testimonial) + `)`)
+    $(`#${testimonial.identifier}-btn #create`).attr("onclick", `window.deleteTestimonial(` + JSON.stringify(testimonial) + `)`)
 
 }
 
-window.deleteTestimonial = (testimonial) =>{
+window.deleteTestimonial = (testimonial) => {
     const message = swal({
-            title: "Wait!",
-            text: "Are you sure to delete this testimonial?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
+        title: "Wait!",
+        text: "Are you sure to delete this testimonial?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
 
-            if (willDelete) {
+        if (willDelete) {
 
-                const request = $.ajax({
-                            url: `${environment.apiURL}/v1/testimonials/${testimonial.identifier}`,
-                            type: "delete",
-                            beforeSend: function(req) {
-                                    req.setRequestHeader("accept", "application/json");
-                                    req.setRequestHeader("Content-Type", "application/json");
-                                    req.setRequestHeader("Authorization", getCookie("Authorization"));
-                            }
-                    }); 
-                    
-            
-                    request.done((response)=>{
-                        swal("Testimonial deleted", { icon: "success" });
-                        $(`#${testimonial.identifier}`).remove();
-                    }); 
-            
-                    request.fail(function (jqXHR, textStatus, errorThrown){
-            
-                        swal("An error ocurred during request", { icon: "warning" });
-            
-                    });
+            const request = $.ajax({
+                url: `${environment.apiURL}/v1/testimonials/${testimonial.identifier}`,
+                type: "delete",
+                beforeSend: function(req) {
+                    req.setRequestHeader("accept", "application/json");
+                    req.setRequestHeader("Content-Type", "application/json");
+                    req.setRequestHeader("Authorization", getCookie("Authorization"));
+                }
+            });
 
-            } else {
-            }
-        });
+
+            request.done((response) => {
+                swal("Testimonial deleted", { icon: "success" });
+                $(`#${testimonial.identifier}`).remove();
+            });
+
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+
+                swal("An error ocurred during request", { icon: "warning" });
+
+            });
+
+        } else {}
+    });
 }
 
-function formatDate(date){
+function formatDate(date) {
 
     let d = new Date(date);
     let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);

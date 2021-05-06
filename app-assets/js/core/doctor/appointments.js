@@ -1,7 +1,7 @@
 import environment from '../../../../environment.js'
 import { checkLogin, logout, getCookie, checkLonginAdministrator } from './../general.js'
 
-$(document).ready(()=>{
+$(document).ready(() => {
     getUsers();
 })
 
@@ -11,7 +11,7 @@ const appointmentFields = ["identifier", "name", "start", "end"]
 let clientMethod = '';
 
 
-function getAppointments(){
+function getAppointments() {
 
     const request = $.ajax({
         url: `${environment.apiURL}/v1/appointments`,
@@ -22,14 +22,15 @@ function getAppointments(){
             req.setRequestHeader("Authorization", getCookie("Authorization"));
         }
     });
-    
-    request.done(function (response, textStatus, jqXHR){
+
+    request.done(function(response, textStatus, jqXHR) {
         let appointmentListHTML = ''
-        /* response.services */
-        response.map(appointment => {
-            if(getCookie("identifier")!=appointment.identifier){
-                appointmentListHTML+=`<tr id='${appointment.identifier}'>
-                                        <th id='${appointment.identifier}-identifier'>${appointment.identifier.slice(appointment.identifier.length - 3)}</th>
+            /* response.services */
+        response.map((appointment, index) => {
+            if (getCookie("identifier") != appointment.identifier) {
+                appointmentListHTML += `<tr id='${appointment.identifier}'>
+                                        <th style='display: none' id='${appointment.identifier}-identifier'>${appointment.identifier}</th>
+                                        <th id='${appointment.identifier}-counter'>${index+1}</th>
                                         <th id='${appointment.identifier}-user'>${users.find(user => user.identifier==appointment.user).email }</th>
                                         <th id='${appointment.identifier}-time'>${formatDate(appointment.time)}</th>
                                         <th id='${appointment.identifier}-for_appointment'>${appointment.for_appointment}</th>
@@ -44,10 +45,10 @@ function getAppointments(){
         });
 
         $("#appointments-list").html(appointmentListHTML)
-        
+
     });
-    
-    request.fail(function (jqXHR, textStatus, errorThrown){
+
+    request.fail(function(jqXHR, textStatus, errorThrown) {
         alert("Se ha producido un error en la consultaç de usuarios")
     });
 
@@ -56,7 +57,7 @@ function getAppointments(){
 }
 
 
-window.sendNotification=(identifier)=>{
+window.sendNotification = (identifier) => {
 
     const request = $.ajax({
         url: `${environment.apiURL}/v1/appointments/${identifier}/push`,
@@ -67,12 +68,12 @@ window.sendNotification=(identifier)=>{
             req.setRequestHeader("Authorization", getCookie("Authorization"));
         }
     });
-    
-    request.done(function (response, textStatus, jqXHR){
+
+    request.done(function(response, textStatus, jqXHR) {
         swal("Done", `Notification send succefully`, "success");
     });
-    
-    request.fail(function (jqXHR, textStatus, errorThrown){
+
+    request.fail(function(jqXHR, textStatus, errorThrown) {
         swal("Error", `An error occurred during request`, "warning");
     });
 
@@ -81,7 +82,7 @@ window.sendNotification=(identifier)=>{
 }
 
 
-function getUsers(){
+function getUsers() {
 
     const request = $.ajax({
         url: `${environment.apiURL}/v1/users`,
@@ -93,27 +94,27 @@ function getUsers(){
         }
     });
 
-    request.done(function (response, textStatus, jqXHR){
+    request.done(function(response, textStatus, jqXHR) {
         users = response
         getAppointments();
     });
 
 }
 
-window.editAppointment=(appointment)=>{
+window.editAppointment = (appointment) => {
 
     $("#form-error").text("")
-    appointmentFields.map(field => $(`#${field}-error`).hide() )
+    appointmentFields.map(field => $(`#${field}-error`).hide())
 
-   clientMethod="edit"
-   appointmentFields.map((field) => $(`#${field}`).val(String(appointment[field])) )
+    clientMethod = "edit"
+    appointmentFields.map((field) => $(`#${field}`).val(String(appointment[field])))
 
-   $("#start").val(formatDate($("#start").val()))
-   $("#end").val(formatDate($("#end").val()))
-    
+    $("#start").val(formatDate($("#start").val()))
+    $("#end").val(formatDate($("#end").val()))
+
 }
 
-function formatDate(date){
+function formatDate(date) {
 
     let d = new Date(date);
     let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
@@ -125,88 +126,87 @@ function formatDate(date){
     return `${ye}-${mo}-${da} ${ho}:${mi}`
 }
 
-window.createAppointment=()=>{
+window.createAppointment = () => {
 
     $("#form-error").text("")
-    appointmentFields.map(field => $(`#${field}-error`).hide() )
+    appointmentFields.map(field => $(`#${field}-error`).hide())
 
-    clientMethod="create"
+    clientMethod = "create"
     appointmentFields.map((field) => $(`#${field}`).val(""))
 
 }
 
 
-window.manageAppointment=()=>{
+window.manageAppointment = () => {
 
     $("#form-error").text("")
-    appointmentFields.map(field =>{
+    appointmentFields.map(field => {
         $(`#${field}-error`).hide()
-        if(!$(`#${field}`).val()){
+        if (!$(`#${field}`).val()) {
             $(`#${field}-error`).show()
         }
     });
 
-    if(
-        !$("#name").val()       ||
-        !$("#start").val()      ||
-        !$("#end").val()      
-    ){
-        
+    if (!$("#name").val() ||
+        !$("#start").val() ||
+        !$("#end").val()
+    ) {
+
         return;
 
     }
 
     const identifier = $("#identifier").val();
-    const path = clientMethod=="create" ? "/v1/appointments" : `/v1/appointments/${identifier}`;
+    const path = clientMethod == "create" ? "/v1/appointments" : `/v1/appointments/${identifier}`;
 
     const appointmentData = {
-        
-            name: $("#name").val(), 
-            start: $("#start").val(), 
-            end: $("#end").val(),
-            repeat: true
-        
+
+        name: $("#name").val(),
+        start: $("#start").val(),
+        end: $("#end").val(),
+        repeat: true
+
     };
 
-    if(clientMethod=="create"){
-        appointmentData["user"]=getCookie("identifier");
-        appointmentData["app"]=getCookie("application");
+    if (clientMethod == "create") {
+        appointmentData["user"] = getCookie("identifier");
+        appointmentData["app"] = getCookie("application");
     }
 
     $("#appointment-btn").hide()
     $("#appointment-spinner").show()
-    
+
     const request = $.ajax({
         url: `${environment.apiURL}${path}`,
-        type: clientMethod=="create" ? "post" : "patch",
+        type: clientMethod == "create" ? "post" : "patch",
         beforeSend: function(req) {
             req.setRequestHeader("accept", "application/json");
             req.setRequestHeader("Content-Type", "application/json");
             req.setRequestHeader("Authorization", getCookie("Authorization"));
-            
+
         },
         data: JSON.stringify(appointmentData)
-    }); 
+    });
 
 
-    let actionWord=clientMethod=="create" ? "created" : "updated";
-     request.done((response)=>{
+    let actionWord = clientMethod == "create" ? "created" : "updated";
+    request.done((response) => {
 
         $("#appointment-btn").show()
         $("#appointment-spinner").hide()
         swal("Done", `The appointment was ${actionWord} succefully`, "success");
-        
-        if(clientMethod=="create"){
-            addAppointmentToList(actionWord=clientMethod=="create" ? response : appointmentData)
+
+        if (clientMethod == "create") {
+            addAppointmentToList(actionWord = clientMethod == "create" ? response : appointmentData)
         } else {
             updateAppointmentInList({
                 identifier: $("#identifier").val(),
                 ...appointmentData
             })
         }
-    }); 
+    });
 
-    request.fail(function (jqXHR, textStatus, errorThrown){
+    request.fail(function(jqXHR, textStatus, errorThrown) {
 
         $("#appointment-btn").show();
         $("#appointment-spinner").hide();
@@ -219,18 +219,22 @@ window.manageAppointment=()=>{
 }
 
 
-function addAppointmentToList(appointment){
+function addAppointmentToList(appointment) {
+    let counter = parseFloat($("#appointments-list tr").last().find("th:nth-child(2)").text()) + 1
+    counter = counter > 0 ? counter : 1
     $("#appointments-list").append(
         `<tr id='${appointment.identifier}'>
-                            <th id='${appointment.identifier}-identifier'>${appointment.identifier.slice(appointment.identifier.length - 3)}</th>
+                            <th style='display: none' id='${appointment.identifier}-identifier'>${appointment.identifier}</th>
+                            <th id='${appointment.identifier}-counter'>${counter
+                            }</th>
                             <th id='${appointment.identifier}-name'>${appointment.name}</th>
                             <th id='${appointment.identifier}-start'>${formatDate(appointment.start)}</th>
                             <th id='${appointment.identifier}-end'>${formatDate(appointment.end)}</th>
                             <th id='${appointment.identifier}-btn'>
-                                <button onClick='window.editAppointment(`+JSON.stringify(appointment)+`)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentsModal">
+                                <button onClick='window.editAppointment(` + JSON.stringify(appointment) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentsModal">
                                     Edit
                                 </button>
-                                <button onClick='window.deleteAppointment(`+JSON.stringify(appointment)+`)' type="button" class="btn btn-danger">
+                                <button onClick='window.deleteAppointment(` + JSON.stringify(appointment) + `)' type="button" class="btn btn-danger">
                                     Delete
                                 </button>
                             </th>
@@ -238,48 +242,47 @@ function addAppointmentToList(appointment){
     )
 }
 
-function updateAppointmentInList(appointment){
+function updateAppointmentInList(appointment) {
 
-    appointmentFields.map( field => $(`#${appointment.identifier}-${field}`).text(`${appointment[field]}`) );
-    $(`#${appointment.identifier}-btn button`).attr("onclick", `window.editAppointment(`+JSON.stringify(appointment)+`)`)
+    appointmentFields.map(field => $(`#${appointment.identifier}-${field}`).text(`${appointment[field]}`));
+    $(`#${appointment.identifier}-btn button`).attr("onclick", `window.editAppointment(` + JSON.stringify(appointment) + `)`)
 
 }
 
 
-window.deleteAppointment = (appointment) =>{
+window.deleteAppointment = (appointment) => {
     const message = swal({
-            title: "Wait!",
-            text: "Are you sure to delete this appointment?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
+        title: "Wait!",
+        text: "Are you sure to delete this appointment?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
 
-            if (willDelete) {
+        if (willDelete) {
 
-                const request = $.ajax({
-                            url: `${environment.apiURL}/v1/appointments/${appointment.identifier}`,
-                            type: "delete",
-                            beforeSend: function(req) {
-                                    req.setRequestHeader("accept", "application/json");
-                                    req.setRequestHeader("Content-Type", "application/json");
-                                    req.setRequestHeader("Authorization", getCookie("Authorization"));
-                            }
-                    }); 
-                    
-            
-                    request.done((response)=>{
-                        swal("Appointment deleted", { icon: "success" });
-                        $(`#${appointment.identifier}`).remove();
-                    }); 
-            
-                    request.fail(function (jqXHR, textStatus, errorThrown){
-            
-                        swal("An error ocurred during request", { icon: "warning" });
-            
-                    });
+            const request = $.ajax({
+                url: `${environment.apiURL}/v1/appointments/${appointment.identifier}`,
+                type: "delete",
+                beforeSend: function(req) {
+                    req.setRequestHeader("accept", "application/json");
+                    req.setRequestHeader("Content-Type", "application/json");
+                    req.setRequestHeader("Authorization", getCookie("Authorization"));
+                }
+            });
 
-            } else {
-            }
-        });
+
+            request.done((response) => {
+                swal("Appointment deleted", { icon: "success" });
+                $(`#${appointment.identifier}`).remove();
+            });
+
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+
+                swal("An error ocurred during request", { icon: "warning" });
+
+            });
+
+        } else {}
+    });
 }

@@ -148,8 +148,8 @@ window.manageUser = () => {
         return;
     }
 
-    if ($("#phone").val().charAt(0)!="+") {
-        
+    if ($("#phone").val().charAt(0) != "+") {
+
         $(".phone-invalid-error").show()
         return;
     }
@@ -223,7 +223,9 @@ window.manageUser = () => {
 
 
 function addUserToList(user) {
-    const counter = parseFloat($("#DataTables_Table_0 tbody tr").last().find("th:nth-child(2)").text()) + 1
+    let counter = parseFloat($("#DataTables_Table_0 tbody tr").last().find("th:nth-child(2)").text()) + 1
+    counter = counter > 0 ? counter : 1
+
     $("#users-list").append(
         `<tr>
                             <th style='display: none' id='${user.identifier}-identifier'>${user.identifier}</th>
@@ -254,7 +256,7 @@ function validateEmail(email) {
 }
 
 window.isNumber = (evt) => {
-    
+
     evt = (evt) ? evt : window.event;
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     console.log(charCode)
