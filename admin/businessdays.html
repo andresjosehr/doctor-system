@@ -41,6 +41,12 @@
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
     <!-- END: Custom CSS-->
 
+    <style>
+        .start:not([disabled]), .end:not([disabled]){
+            background: white !important;
+        }
+    </style>
+
 </head>
 <!-- END: Head-->
 
@@ -228,8 +234,18 @@
                         <div class="card-header" style="margin-top: 15px">
                             <h2>Bussines Days</h2>
 
-                            <select onchange="window.changeApp()" class="active select2 select-label form-control w-100" id="apps" name="apps" style='width: 200px !important;'>
-                            </select>
+                            <div style="display: flex;">
+                                <select style="width: 130px !important; margin-right: 10px;" onchange="window.changeBranches()" class="select2 select-label form-control w-100" id="apps" name="apps" >
+                                </select>
+
+                                <!-- onchange="window.changeApp()" -->
+                                <select onchange="window.changeUsers()" class="select2 select-label form-control w-100" id="branches" name="branches" style="width: 130px !important; margin-right: 10px;">
+                                </select>
+
+                                <select onchange='window.changeBussinesDays()' class="select2 select-label form-control w-100" id="users" name="users" style="width: 130px !important; margin-right: 10px;">
+                                </select>
+                            </div>
+
                         </div>
                     </div>
                     <!-- users filter end -->
@@ -259,7 +275,7 @@
                                                 <option data-label="danger" value="false">False</option>
                                             </select>
                                         </td>
-                                        <td><button onClick='window.updateWorkWeek("sunday")' type="button" class="btn btn-primary" data-toggle="modal">
+                                        <td><button onClick='window.updateWorkWeek("sunday")' type="button" class="save btn btn-primary" data-toggle="modal">
                                             Save
                                           </button> </td>
                                     </tr>
@@ -276,7 +292,7 @@
                                                 <option data-label="danger" value="false">False</option>
                                             </select>
                                         </td>
-                                        <td><button onClick='window.updateWorkWeek("monday")' type="button" class="btn btn-primary" data-toggle="modal">
+                                        <td><button onClick='window.updateWorkWeek("monday")' type="button" class="save btn btn-primary" data-toggle="modal">
                                             Save
                                           </button> </td>
                                     </tr>
@@ -293,7 +309,7 @@
                                                 <option data-label="danger" value="false">False</option>
                                             </select>
                                         </td>
-                                        <td><button onClick='window.updateWorkWeek("tuesday")' type="button" class="btn btn-primary" data-toggle="modal">
+                                        <td><button onClick='window.updateWorkWeek("tuesday")' type="button" class="save btn btn-primary" data-toggle="modal">
                                             Save
                                           </button> </td>
                                     </tr>
@@ -310,7 +326,7 @@
                                                 <option data-label="danger" value="false">False</option>
                                             </select>
                                         </td>
-                                        <td><button onClick='window.updateWorkWeek("wednesday")' type="button" class="btn btn-primary" data-toggle="modal">
+                                        <td><button onClick='window.updateWorkWeek("wednesday")' type="button" class="save btn btn-primary" data-toggle="modal">
                                             Save
                                           </button> </td>
                                     </tr>
@@ -327,7 +343,7 @@
                                                 <option data-label="danger" value="false">False</option>
                                             </select>
                                         </td>
-                                        <td><button onClick='window.updateWorkWeek("thursday")' type="button" class="btn btn-primary" data-toggle="modal">
+                                        <td><button onClick='window.updateWorkWeek("thursday")' type="button" class="save btn btn-primary" data-toggle="modal">
                                             Save
                                           </button> </td>
                                     </tr>
@@ -344,7 +360,7 @@
                                                 <option data-label="danger" value="false">False</option>
                                             </select>
                                         </td>
-                                        <td><button onClick='window.updateWorkWeek("friday")' type="button" class="btn btn-primary" data-toggle="modal">
+                                        <td><button onClick='window.updateWorkWeek("friday")' type="button" class="save btn btn-primary" data-toggle="modal">
                                             Save
                                           </button> </td>
                                     </tr>
@@ -361,7 +377,7 @@
                                                 <option data-label="danger" value="false">False</option>
                                             </select>
                                         </td>
-                                        <td><button onClick='window.updateWorkWeek("saturday")' type="button" class="btn btn-primary" data-toggle="modal">
+                                        <td><button onClick='window.updateWorkWeek("saturday")' type="button" class="save btn btn-primary" data-toggle="modal">
                                             Save
                                           </button> </td>
                                     </tr>
@@ -424,10 +440,23 @@
 
                 const dayOfTheWeek= [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" ]
 
-                dayOfTheWeek.map(day =>{
+                /* dayOfTheWeek.map(day =>{
 
+                    flatpickr(`#${day} .start`, {
+                        noCalendar: true,
+                        enableTime: true,
+                        dateFormat: "H:i",
+                        defaultDate: new Date("2021-04-06 "+day[1].start)
+                    });
+
+                    flatpickr(`#${day} .end`, {
+                        noCalendar: true,
+                        enableTime: true,
+                        dateFormat: "H:i",
+                        defaultDate: new Date("2021-04-06 "+day[1].end)
+                    });
                     
-                })
+                }) */
 
         })
     </script>
