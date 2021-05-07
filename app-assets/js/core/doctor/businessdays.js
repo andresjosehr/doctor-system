@@ -1,31 +1,15 @@
 
 import environment from '../../../../environment.js'
-import { checkLogin, logout, getCookie, checkLonginAdministrator } from './../general.js'
+import { checkLogin, logout, getCookie, checkLonginAdministrator, checkLonginGeneral } from './../general.js'
 
 $(document).ready(()=>{
-    getApp();
-})
+    checkLonginGeneral(function(){
 
-const dayOfTheWeek= [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" ]
-let app;
-
-function getApp(){
-
-    const request = $.ajax({
-        url: `${environment.apiURL}/v1/apps`,
-        type: "get",
-        beforeSend: function(req) {
-            req.setRequestHeader("accept", "application/json");
-            req.setRequestHeader("Content-Type", "application/json");
-            req.setRequestHeader("Authorization", getCookie("Authorization"));
-          }
-    });
     
-    request.done(function (response, textStatus, jqXHR){
-        let holidayListHTML = ''
-        app = response[0];
+        const user = JSON.parse(getCookie("user"));
+        console.log(user)
 
-        Object.entries(app.work_weeks).map((day) =>{
+        Object.entries(user.work_weeks).map((day) =>{
 
             $(`#${day[0]} .start`).val(day[1].start)
             $(`#${day[0]} .end`).val(day[1].end)
@@ -46,23 +30,23 @@ function getApp(){
                 defaultDate: new Date("2021-04-06 "+day[1].end)
             });
         })
-        
-    });
-    
-    request.fail(function (jqXHR, textStatus, errorThrown){
-        alert("Se ha producido un error en la consulta de usuarios")
-    });
 
 
 
-}
+})
+})
+
+const dayOfTheWeek= [ "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" ]
+let app;
+
+
 
 window.updateWorkWeek = (day) =>{
 
 
 
     const request = $.ajax({
-        url: `${environment.apiURL}/v1/apps/${app.identifier}/week/${capitalizeFirstLetter(day)}`,
+        url: `${environment.apiURL}/v1/users/${getCookie("identifier")}/week/${capitalizeFirstLetter(day)}`,
         type: "patch",
         beforeSend: function(req) {
             req.setRequestHeader("accept", "application/json");

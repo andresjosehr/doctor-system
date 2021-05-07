@@ -70,6 +70,7 @@ function login() {
                 document.cookie = `identifier=${response.identifier}; Path=/;`;
                 document.cookie = `Authorization=${response.token}; Path=/;`;
                 document.cookie = `application=${application}; Path=/;`;
+                document.cookie = `user=${JSON.stringify(response)}; Path=/;`;
                 checkLonginL();
 
             });

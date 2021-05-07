@@ -6,7 +6,7 @@ $(document).ready(()=>{
     checkLonginGeneral();
 })
 
-
+export let user;
 export const checkLogin=()=>{
 
 
@@ -57,6 +57,7 @@ window.logoutL=()=>{
         delete_cookie("identifier");
         delete_cookie("Authorization");
         delete_cookie("application");
+        delete_cookie("user");
         
         window.location.href = `${environment.appUrl}/${app}`;
 
@@ -87,6 +88,7 @@ export const checkLonginAdministrator=()=>{
 
     request.done(function (response, textStatus, jqXHR){
 
+        window.user=response
         if(response.type_users!="admins"){
             window.location.href = environment.appUrl;
         }
@@ -107,6 +109,7 @@ export const checkLonginDoctor=()=>{
 
     request.done(function (response, textStatus, jqXHR){
 
+        document.cookie = `user=${JSON.stringify(user)}; Path=/;`;
         if(response.type_users!="doctors"){
             window.location.href = environment.appUrl;
         }
@@ -120,13 +123,17 @@ export const checkLonginDoctor=()=>{
 }
 
 
-export const checkLonginGeneral=()=>{
+export const checkLonginGeneral=(callback = () =>{} )=>{
 
     const request = checkLogin();
 
     request.done(function (response, textStatus, jqXHR){
 
+        delete_cookie("user");
+        document.cookie = `user=${JSON.stringify(response)}; Path=/;`;
         
+        callback();
+
         if(!window.location.href.split("/").includes("doctor") && response.type_users=="doctors"){
             window.location.href = environment.appUrl+"/doctor";
         } 

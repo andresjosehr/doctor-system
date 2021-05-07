@@ -235,15 +235,23 @@
                             <h2>Bussines Days</h2>
 
                             <div style="display: flex;">
-                                <select style="width: 130px !important; margin-right: 10px;" onchange="window.changeBranches()" class="select2 select-label form-control w-100" id="apps" name="apps" >
-                                </select>
+                                <div>
+                                    <label for="apps" class="form-label">Clinic</label>
+                                    <select style="width: 130px !important; margin-right: 10px;" onchange="window.changeBranches()" class="select2 select-label form-control w-100" id="apps" name="apps" >
+                                    </select>
+                                </div>
 
-                                <!-- onchange="window.changeApp()" -->
-                                <select onchange="window.changeUsers()" class="select2 select-label form-control w-100" id="branches" name="branches" style="width: 130px !important; margin-right: 10px;">
-                                </select>
+                                <div>
+                                    <label for="branches" class="form-label">Branch</label>
+                                    <select onchange="window.changeUsers()" class="select2 select-label form-control w-100" id="branches" name="branches" style="width: 130px !important; margin-right: 10px;">
+                                    </select>
+                                </div>
 
-                                <select onchange='window.changeBussinesDays()' class="select2 select-label form-control w-100" id="users" name="users" style="width: 130px !important; margin-right: 10px;">
-                                </select>
+                                <div>
+                                    <label for="users" class="form-label">Doctor</label>
+                                    <select onchange='window.changeBussinesDays()' class="select2 select-label form-control w-100" id="users" name="users" style="width: 130px !important; margin-right: 10px;">
+                                    </select>
+                                </div>
                             </div>
 
                         </div>
