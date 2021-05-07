@@ -4,10 +4,12 @@ import { checkLogin, logout, getCookie, checkLonginAdministrator } from './../ge
 $(document).ready(() => {
     getUsers();
     getApps();
+    getbranch();
 })
 
-const userFields = ["identifier", "email", "name", "password", "password2", "phone", "active", "type_users", "app"]
+const userFields = ["identifier", "email", "name", "password", "password2", "branch", "phone", "active", "type_users", "app"]
 let clientMethod = '';
+let branches = [];
 
 function getApps() {
 
@@ -30,6 +32,31 @@ function getApps() {
 }
 
 
+function getbranch() {
+
+    const request = $.ajax({
+        url: `${environment.apiURL}/v1/branches`,
+        type: "get",
+        beforeSend: function(req) {
+            req.setRequestHeader("accept", "application/json");
+            req.setRequestHeader("Content-Type", "application/json");
+            req.setRequestHeader("Authorization", getCookie("Authorization"));
+        }
+    });
+
+    request.done(function(response, textStatus, jqXHR) {
+        branches = response
+    });
+}
+
+window.changeBranches = () => {
+        let branchesOptions = ''
+        $("#branch").html("")
+        branches.map(branch => branchesOptions += branch.app==$("#app").val() ? `<option data-label="danger" value="${branch.identifier}">${branch.name}</option>` : "")
+        $("#branch").append(branchesOptions)
+}
+
+
 function getUsers() {
 
     const request = $.ajax({
@@ -49,6 +76,7 @@ function getUsers() {
                 userListHTML += `<tr>
                                     <th style='display: none' id='${user.identifier}-identifier'>${user.identifier}</th>
                                     <th id='${user.identifier}-counter'>${index}</th>
+                                    <th id='${user.identifier}-name'>${user.name}</th>
                                     <th id='${user.identifier}-email'>${user.email}</th>
                                     <th id='${user.identifier}-phone'>${user.phone}</th>
                                     <th id='${user.identifier}-type_users'>${user.type_users}</th>
@@ -81,12 +109,15 @@ window.editUser = (user) => {
 
     clientMethod = "edit"
     userFields.map((field) => $(`#${field}`).val(String(user[field])))
+    window.changeBranches();
+    userFields.map((field) => $(`#${field}`).val(String(user[field])))
 
     $("#password").val("");
     $("#password").prop('disabled', true);
     $("#password2").val("");
     $("#password2").prop('disabled', true);
     $("#app").prop('disabled', true);
+    $("#branch").prop('disabled', true);
     $("#type_users").prop('disabled', true);
 
 }
@@ -97,9 +128,11 @@ window.createUser = () => {
     userFields.map(field => $(`#${field}-error`).hide())
 
     clientMethod = "create"
+    $("#branch").html("")
     $("#password").prop('disabled', false);
     $("#password").prop('disabled', false);
     $("#app").prop('disabled', false);
+    $("#branch").prop('disabled', false);
     $("#type_users").prop('disabled', false);
     userFields.map((field) => $(`#${field}`).val(""))
 
@@ -129,6 +162,7 @@ window.manageUser = () => {
         !$("#phone").val() ||
         !$("#name").val() ||
         !$("#active").val() ||
+        !$("#branch").val() ||
         !$("#type_users").val()
     ) {
 
@@ -173,6 +207,7 @@ window.manageUser = () => {
         userData["password2"] = $("#password").val();
         userData["type_users"] = $("#type_users").val();
         userData["app"] = $("#app").val();
+        userData["branch"] = $("#branch").val();
     }
 
     $("#user-btn").hide()
@@ -230,6 +265,7 @@ function addUserToList(user) {
         `<tr>
                             <th style='display: none' id='${user.identifier}-identifier'>${user.identifier}</th>
                             <th id='${user.identifier}-counter'>${counter}</th>
+                            <th id='${user.identifier}-name'>${user.name}</th>
                             <th id='${user.identifier}-email'>${user.email}</th>
                             <th id='${user.identifier}-phone'>${user.phone}</th>
                             <th id='${user.identifier}-type_users'>${user.type_users}</th>

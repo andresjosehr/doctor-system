@@ -47,6 +47,9 @@
             color: #ea5455;
             font-size: 0.857rem;
         }
+        .identifier{
+            display: block !important;
+        }
     </style>
 
 </head>
@@ -268,7 +271,8 @@
                             <table class="user-list-table table">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Identifier</th>
+                                        <th class='identifier'>Identifier</th>
+                                        <th>Name</th>
                                         <th>E-mail</th>
                                         <th>Phone</th>
                                         <th>Type</th>
@@ -341,22 +345,27 @@
                                     </div>
                                     <div class="modal-body">
                                         <div style="display: flex; box-sizing: border-box;">
-                                            <div class="form-group position-relative" style="width: 25%; margin: 0px 10px 10px 10px; display:none">
+                                            <div class="form-group position-relative" style="width: 25%; margin: 0px 10px 10px 5px; display:none">
                                                 <label for="identifier" class="form-label">Identifier</label>
                                                 <input type="text" class="form-control" id="identifier" name="identifier" placeholder="0" disabled/>
                                             </div>
-                                            <div class="form-group position-relative" style="width: 100%;margin: 0px 10px 10px 5px;">
+                                            <div class="form-group position-relative" style="width: 50%;margin: 0px 5px 5px 5px;">
                                                 <label for="email" class="form-label">Name</label>
                                                 <input type="text" class="form-control" id="name" name="name" placeholder="" />
-                                                <span style="display: none;" id="name-error" class="error">Required</span>
+                                                <span style="display: none;" id="name-error" class="error">The name is required</span>
+                                            </div>
+                                            <div class="form-group position-relative" style="width: 50%;margin: 0px 5px 5px 5px;padding-left: 11px;padding-bottom: 10px;">
+                                                <label for="email" class="form-label">E-mail</label>
+                                                <input type="text" class="form-control" id="email" name="email" placeholder="" />
+                                                <span style="display: none;" id="email-error" class="error">The email is required</span>
+                                                <span style="display: none;" id="email-invalid-error" class="error">The email is invalid</span>
                                             </div>
                                         </div>
                                         <div style="display: flex; box-sizing: border-box;">
                                             <div class="form-group position-relative" style="width: 50%;margin: 0px 10px 10px 5px;">
-                                                <label for="email" class="form-label">E-mail</label>
-                                                <input type="text" class="form-control" id="email" name="email" placeholder="" />
-                                                <span style="display: none;" id="email-error" class="error">Required</span>
-                                                <span style="display: none;" id="email-invalid-error" class="error">The email is invalid</span>
+                                                <label for="phone" class="form-label">Phone number</label>
+                                                    <input onkeypress="return window.isNumber(event)" type="text" class="form-control" id="phone" name="phone" placeholder="" />
+                                                    <span style="display: none;" class="error phone-invalid-error">Phone format should be like +00000...</span>
                                             </div>
                                             <div class="form-group position-relative" style="width: 50%; margin: 0px 5px 5px 5px">
                                                 <div style="display: flex; width: 100%;">
@@ -366,7 +375,7 @@
                                                             <option data-label="primary" value="true" selected>True</option>
                                                             <option data-label="danger" value="false">False</option>
                                                         </select>
-                                                        <span style="display: none;" id="active-error" class="error">Required</span>
+                                                        <span style="display: none;" id="active-error" class="error">The active field is required</span>
                                                     </div>
                                                     <div class="form-group" style="width: 50%; margin: 0px 10px 0px 10px">
                                                         <label for="type_users" class="form-label">Level</label>
@@ -374,7 +383,7 @@
                                                             <option data-label="primary" value="Patient" selected>Patient</option>
                                                             <option data-label="danger" value="doctors">Doctor</option>    
                                                         </select>
-                                                        <span style="display: none;" id="type_users-error" class="error">Required</span>
+                                                        <span style="display: none;" id="type_users-error" class="error">The level is required</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -382,32 +391,33 @@
                                         <div style="display: flex; box-sizing: border-box;">
 
                                             <div class="form-group position-relative" style="width: 50%; margin: 0px 5px 5px 5px">
-                                                <div>
+                                                <div style="margin-bottom: 10px;">
                                                     <label for="password" class="form-label">Password</label>
                                                     <input type="password" class="form-control" id="password" name="password" placeholder="" />
-                                                    <span style="display: none;" id="password-error" class="error">Required</span>
+                                                    <span style="display: none;" id="password-error" class="error">The password isequired</span>
                                                     <span style="display: none;" class="error password-match-error">Passwords doesn't match</span>
                                                 </div>
                                                 <div>
-                                                    <label for="phone" class="form-label">Phone number</label>
-                                                    <input onkeypress="return window.isNumber(event)" type="text" class="form-control" id="phone" name="phone" placeholder="" />
-                                                    <span style="display: none;" class="error phone-invalid-error">Phone format should be like +00000...</span>
+                                                    <label for="app" class="form-label">Clinic</label>
+                                                    <select onchange="window.changeBranches()" class="select2 type_users form-control w-100" id="app" name="app">                                                    
+                                                    </select>
+                                                    <span style="display: none;" id="app-error" class="error">The clinic is required</span>
                                                 </div>
                                             </div>
 
                                             <div class="form-group position-relative" style="width: 50%; margin: 0px 5px 5px 5px">
-                                                <div style='margin: 0px 10px;'>
+                                                <div style='margin: 0px 10px;margin-bottom: 10px !important;'>
                                                     <label for="password2" class="form-label">Confirm password</label>
                                                     <input type="password" class="form-control" id="password2" name="password2" placeholder="" />
-                                                    <span style="display: none;" id="password2-error" class="error">Required</span>
+                                                    <span style="display: none;" id="password2-error" class="error">The password is required</span>
                                                     <span style="display: none;" class="error password-match-error">Passwords doesn't match</span>
                                                 </div>
                                                 <div class="form-group position-relative" style="width: 91%;">
                                                     <div style="width: 100%;margin: 0px 10px 5px 10px">
-                                                        <label for="app" class="form-label">Application</label>
-
-                                                        <select class="select2 type_users form-control w-100" id="app" name="app">                                                    
-                                                </select>
+                                                        <label for="branch" class="form-label">Branch</label>
+                                                        <select class="select2 type_users form-control w-100" id="branch" name="branch">                                                    
+                                                        </select>
+                                                        <span style="display: none;" id="branch-error" class="error">The branch is required</span>
                                                     </div>
                                                 </div>
                                             </div>
