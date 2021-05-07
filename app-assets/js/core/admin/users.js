@@ -81,6 +81,7 @@ function getUsers() {
                                     <th id='${user.identifier}-phone'>${user.phone}</th>
                                     <th id='${user.identifier}-type_users'>${user.type_users}</th>
                                     <th id='${user.identifier}-active'>${user.active}</th>
+                                    <th style='display: none' id='${user.identifier}-branch'>${$("#branch").val()}</th>
                                     <th id='${user.identifier}-btn'>
                                         <button onClick='window.editUser(` + JSON.stringify(user) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#usersModal">
                                             Edit
@@ -116,8 +117,6 @@ window.editUser = (user) => {
     $("#password").prop('disabled', true);
     $("#password2").val("");
     $("#password2").prop('disabled', true);
-    $("#app").prop('disabled', true);
-    $("#branch").prop('disabled', true);
     $("#type_users").prop('disabled', true);
 
 }
@@ -130,7 +129,7 @@ window.createUser = () => {
     clientMethod = "create"
     $("#branch").html("")
     $("#password").prop('disabled', false);
-    $("#password").prop('disabled', false);
+    $("#password2").prop('disabled', false);
     $("#app").prop('disabled', false);
     $("#branch").prop('disabled', false);
     $("#type_users").prop('disabled', false);
@@ -265,13 +264,14 @@ function addUserToList(user) {
         `<tr>
                             <th style='display: none' id='${user.identifier}-identifier'>${user.identifier}</th>
                             <th id='${user.identifier}-counter'>${counter}</th>
-                            <th id='${user.identifier}-name'>${user.name}</th>
+                            <th id='${user.identifier}-name'>${$("#name").val()}</th>
                             <th id='${user.identifier}-email'>${user.email}</th>
                             <th id='${user.identifier}-phone'>${user.phone}</th>
                             <th id='${user.identifier}-type_users'>${user.type_users}</th>
                             <th id='${user.identifier}-active'>${user.active}</th>
+                            <th style='display: none' id='${user.identifier}-branch'>${$("#branch").val()}</th>
                             <th id='${user.identifier}-btn'>
-                                <button onClick='window.editUser(` + JSON.stringify(user) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#usersModal">
+                                <button onClick='window.editUser(` + JSON.stringify({...user, name: $("#name").val(), branch: $("#branch").val()}) + `)' type="button" class="btn btn-primary" data-toggle="modal" data-target="#usersModal">
                                     Edit
                                 </button>
                             </th>

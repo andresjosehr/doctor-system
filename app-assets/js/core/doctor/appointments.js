@@ -70,7 +70,7 @@ window.sendNotification = (identifier) => {
     });
 
     request.done(function(response, textStatus, jqXHR) {
-        swal("Done", `Notification send succefully`, "success");
+        swal("Done", `Notification sent succefully`, "success");
     });
 
     request.fail(function(jqXHR, textStatus, errorThrown) {
