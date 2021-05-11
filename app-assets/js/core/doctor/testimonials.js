@@ -114,7 +114,7 @@ window.manageTestimonial = () => {
     }
 
     const identifier = $("#identifier").val();
-    const path = testimonialMethod == "create" ? "/v1/testimonials" : `/v1/testimonials/${identifier}`;
+    const path = testimonialMethod == "create" ? "/v1/testimonials" : `/v1/testimonials/${$("#identifier").val()}`;
 
     const testimonialData = {
         name: $('#name').val(),

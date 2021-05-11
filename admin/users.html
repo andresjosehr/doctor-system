@@ -379,8 +379,8 @@
                                                     </div>
                                                     <div class="form-group" style="width: 50%; margin: 0px 10px 0px 10px">
                                                         <label for="type_users" class="form-label">Level</label>
-                                                        <select class="select2 type_users form-control w-100" id="type_users" name="type_users">
-                                                            <option data-label="primary" value="Patient" selected>Patient</option>
+                                                        <select onchange="window.changeTypeUser()" class="select2 type_users form-control w-100" id="type_users" name="type_users">
+                                                            <option data-label="primary" value="pacients" selected>Patient</option>
                                                             <option data-label="danger" value="doctors">Doctor</option>    
                                                         </select>
                                                         <span style="display: none;" id="type_users-error" class="error">The level is required</span>

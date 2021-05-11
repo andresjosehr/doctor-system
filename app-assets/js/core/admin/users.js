@@ -105,6 +105,8 @@ function getUsers() {
 
 window.editUser = (user) => {
 
+
+    
     $("#form-error").text("")
     userFields.map(field => $(`#${field}-error`).hide())
 
@@ -113,6 +115,7 @@ window.editUser = (user) => {
     window.changeBranches();
     userFields.map((field) => $(`#${field}`).val(String(user[field])))
 
+    window.changeTypeUser();
     $("#password").val("");
     $("#password").prop('disabled', true);
     $("#password2").val("");
@@ -152,6 +155,7 @@ window.manageUser = () => {
             $(`#${field}-error`).show()
         }
     });
+    $("#branch-error").hide()
     if (clientMethod == "edit") {
         $("#password-error").hide()
         $("#password2-error").hide()
@@ -161,7 +165,6 @@ window.manageUser = () => {
         !$("#phone").val() ||
         !$("#name").val() ||
         !$("#active").val() ||
-        !$("#branch").val() ||
         !$("#type_users").val()
     ) {
 
@@ -184,6 +187,11 @@ window.manageUser = () => {
     if ($("#phone").val().charAt(0) != "+") {
 
         $(".phone-invalid-error").show()
+        return;
+    }
+
+    if($("#type_users").val()!="pacients" && !$("#branch").val()){
+        $(".branch-error").show()
         return;
     }
 
@@ -235,8 +243,12 @@ window.manageUser = () => {
         if (clientMethod == "create") {
             addUserToList(actionWord = clientMethod == "create" ? response : userData)
         } else {
+            console.log(userData)
             updateUserInList({
                 identifier: $("#identifier").val(),
+                type_users: $("#type_users").val(),
+                app: $("#app").val(),
+                branch: $("#branch").val(),
                 type_users: $("#type_users").val(),
                 ...userData
             })
@@ -300,4 +312,11 @@ window.isNumber = (evt) => {
         return false;
     }
     return true;
+}
+
+window.changeTypeUser=()=>{
+    $("#branch").prop('disabled', false);
+    if($("#type_users").val()=="pacients"){
+        $("#branch").prop('disabled', true);
+    }
 }

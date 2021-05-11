@@ -33,7 +33,6 @@ function getBlogs() {
                                     <th id='${blog.identifier}-counter'>${index+1}</th> 
                                     <th id='${blog.identifier}-title_blog'>${blog.title_blog}</th>
                                     <th id='${blog.identifier}-sub_title'>${blog.sub_title}</th>
-                                    <th id='${blog.identifier}-fecha'>${blog.fecha}</th>
                                     <th id='${blog.identifier}-photo'>
                                     <img style='width: 70px;' src='${environment.apiURL}/images/blogs/${blog.identifier}/photo' />
                                     </th>
@@ -145,7 +144,8 @@ window.manageBlog = () => {
         if (blogMethod == "create") {
             uploadBlogPhoto(response, blogMethod);
         } else {
-            uploadBlogPhoto(blogData, blogMethod);
+            uploadBlogPhoto({...blogData, identifier: $("#identifier").val()}, blogMethod);
+            console.log(blogData)
         }
 
         $("#blogModal").modal('hide');
@@ -197,7 +197,7 @@ function uploadBlogPhoto(blog, blogMethod) {
             if (blogMethod == "create") {
                 addBlogToList(blog);
             } else {
-                updateBlogInLit({ identifier: $('#identifier').val().slice($('#identifier').val().length - 3), ...blogData });
+                updateBlogInList({ identifier: $('#identifier').val(), ...blog});
             }
         });
 
@@ -239,7 +239,6 @@ function addBlogToList(blog) {
             <th id='${blog.identifier}-counter'>${counter}</th>
             <th id='${blog.identifier}-title_blog'>${blog.title_blog}</th>
             <th id='${blog.identifier}-sub_title'>${blog.sub_title}</th>
-            <th id='${blog.identifier}-fecha'>${blog.fecha}</th>
             <th id='${blog.identifier}-photo'>
                 <img style='width: 70px;' src='${environment.apiURL}/images/blogs/${blog.identifier}/photo' />
             </th>
@@ -265,6 +264,7 @@ function updateBlogInList(blog) {
             $(`#${blog.identifier}-${field}`).text(`${blog[field]}`)
         }
     });
+    $(`#${blog.identifier}-photo img`).attr("src", `${environment.apiURL}/images/blogs/${blog.identifier}/photo`)
     $(`#${blog.identifier}-btn #edit`).attr("onclick", `window.editBlog(` + JSON.stringify(blog) + `)`)
     $(`#${blog.identifier}-btn #create`).attr("onclick", `window.deleteBlog(` + JSON.stringify(blog) + `)`)
 

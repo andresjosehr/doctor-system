@@ -1,5 +1,5 @@
 import environment from '../../../environment.js'
-import { getCookie, checkLogin } from './general.js'
+import { getCookie, checkLogin, delete_cookie } from './general.js'
 
 window.app = ''
 
@@ -17,7 +17,21 @@ function checkLonginL() {
 
     request.done(function(response, textStatus, jqXHR) {
 
-        console.log($(location).attr('href'), environment.appUrl)
+        $("#login-btn").show()
+        $("#login-spinner").hide()
+
+        if(response.type_users=="pacients"){
+            
+            $("#request-error").text("You are not authorized to enter the platform")
+            $("#request-error").show()
+
+            delete_cookie("identifier");
+            delete_cookie("Authorization");
+            delete_cookie("application");
+            delete_cookie("user");
+
+            return;
+        }
 
         if (response.type_users == "admins") {
             window.location.href = "./admin/calendar.html";
@@ -26,8 +40,10 @@ function checkLonginL() {
         if (response.type_users == "doctors") {
             window.location.href = "./doctor/calendar.html";
         }
-        $("#login-btn").show()
-        $("#login-spinner").hide()
+
+        
+        
+        
     });
 
     request.fail(function(jqXHR, textStatus, errorThrown) {

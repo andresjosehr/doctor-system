@@ -77,7 +77,7 @@ export const getCookie = (name) => {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
-function delete_cookie(name) {
+export const delete_cookie = (name) => {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
@@ -140,6 +140,10 @@ export const checkLonginGeneral=(callback = () =>{} )=>{
 
         if(!window.location.href.split("/").includes("admin") && response.type_users=="admins"){
             window.location.href = environment.appUrl+"/admin";
-        } 
+        }
+
+        
+
+
     });
 }
